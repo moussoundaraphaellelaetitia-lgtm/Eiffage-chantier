@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Eiffage Chantier</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E3001B;--rd:#B8001A;
+  --bg:#F5F5F5;--white:#FFFFFF;--black:#111111;
+  --g50:#F8F8F8;--g100:#EFEFEF;--g200:#E0E0E0;--g300:#C8C8C8;
+  --g400:#A0A0A0;--g500:#777;--g600:#555;
+  --success:#16a34a;--warn:#d97706;--info:#2563eb;--purple:#7c3aed;
+  --font:'Barlow',sans-serif;--fontc:'Barlow Condensed',sans-serif;
+  --r:12px;--rsm:8px;--nav:66px;
+  --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--font);background:#ddd;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden;}
+.phone{width:390px;height:844px;background:var(--bg);border-radius:44px;overflow:hidden;position:relative;box-shadow:0 0 0 2px #bbb,0 30px 80px rgba(0,0,0,.4);}
+@media(max-width:420px){body{background:var(--bg);align-items:flex-start;}.phone{width:100vw;height:100dvh;border-radius:0;box-shadow:none;}}
+
+/* STATUS BAR */
+.sbar{height:44px;background:var(--white);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100;flex-shrink:0;border-bottom:1px solid var(--g200);}
+.sbar-time{font-size:15px;font-weight:700;color:var(--black);}
+.sbar-icons svg{fill:var(--black);}
+.sbar-icons{display:flex;gap:6px;align-items:center;}
+
+/* SCREENS */
+.screen{position:absolute;top:44px;left:0;right:0;bottom:0;background:var(--bg);display:none;flex-direction:column;overflow:hidden;}
+.screen.active{display:flex;}
+
+/* ─── LANG ─── */
+#scr-lang{background:var(--white);justify-content:center;align-items:center;padding:28px;}
+.lang-logo{margin-bottom:14px;text-align:center;}
+.lang-appname{font-family:var(--fontc);font-size:26px;font-weight:800;color:var(--black);letter-spacing:2px;text-align:center;}
+.lang-appname span{color:var(--red);}
+.lang-sub{font-size:11px;color:var(--g500);letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:20px;}
+.lang-title{font-size:18px;font-weight:700;color:var(--black);text-align:center;margin-bottom:4px;}
+.lang-hint{font-size:12px;color:var(--g500);text-align:center;margin-bottom:20px;}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;max-width:300px;}
+.lang-btn{background:var(--g50);border:2px solid var(--g200);border-radius:var(--rsm);padding:12px 10px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--black);font-family:var(--font);font-size:13px;font-weight:600;transition:all .2s;}
+.lang-btn.sel{border-color:var(--red);background:rgba(227,0,27,.06);}
+.lang-flag{font-size:20px;}
+.lang-confirm{margin-top:20px;width:100%;max-width:300px;background:var(--red);color:#fff;border:none;border-radius:var(--rsm);padding:14px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;}
+
+/* ─── LOGIN ─── */
+#scr-login{background:var(--white);overflow-y:auto;}
+#scr-login::-webkit-scrollbar{display:none;}
+.login-inner{padding:22px;display:flex;flex-direction:column;align-items:center;}
+.login-logo{text-align:center;margin-bottom:22px;margin-top:8px;}
+.login-appname{font-family:var(--fontc);font-size:24px;font-weight:800;color:var(--black);letter-spacing:2px;}
+.login-appname span{color:var(--red);}
+.form-w{width:100%;max-width:320px;}
+.flbl{font-size:11px;font-weight:700;color:var(--g500);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;display:block;}
+.finput{width:100%;background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--rsm);padding:11px 13px;color:var(--black);font-family:var(--font);font-size:14px;margin-bottom:12px;outline:none;transition:border-color .2s;}
+.finput:focus{border-color:var(--red);}
+.fselect{width:100%;background:var(--g50);border:1.5px solid var(--g200);border-radius:var(--rsm);padding:11px 13px;color:var(--black);font-family:var(--font);font-size:14px;margin-bottom:12px;outline:none;cursor:pointer;-webkit-appearance:none;transition:border-color .2s;}
+.fselect:focus{border-color:var(--red);}
+.fselect:disabled{opacity:.4;cursor:not-allowed;}
+.key-row{display:flex;gap:7px;margin-bottom:12px;}
+.key-row .finput{margin-bottom:0;flex:1;}
+.key-validate{background:var(--red);color:#fff;border:none;border-radius:var(--rsm);padding:11px 14px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.key-ok{display:none;align-items:center;gap:6px;background:rgba(22,163,74,.08);border:1px solid var(--success);border-radius:var(--rsm);padding:7px 12px;margin-bottom:12px;font-size:12px;color:var(--success);font-weight:700;}
+.login-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:var(--rsm);padding:14px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;margin-top:3px;}
+.login-qr{margin-top:10px;text-align:center;font-size:12px;color:var(--g500);}
+.login-qr span{color:var(--red);cursor:pointer;font-weight:600;}
+
+/* ─── APP SHELL ─── */
+#scr-app{background:var(--bg);}
+.app-hdr{background:var(--white);padding:11px 16px 9px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.hdr-logo{font-family:var(--fontc);font-size:18px;font-weight:800;color:var(--black);letter-spacing:1px;display:flex;align-items:center;gap:8px;}
+.hdr-logo span{color:var(--red);}
+.hdr-right{display:flex;gap:8px;align-items:center;}
+.hdr-notif{position:relative;width:32px;height:32px;background:var(--g100);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.hdr-notif svg{fill:var(--g600);width:16px;height:16px;}
+.nbadge{position:absolute;top:-3px;right:-3px;width:14px;height:14px;background:var(--red);border-radius:50%;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--white);}
+.hdr-av{width:32px;height:32px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;cursor:pointer;}
+.tab-content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tab-content::-webkit-scrollbar{display:none;}
+.tab-pane{display:none;padding-bottom:8px;}
+.tab-pane.active{display:block;}
+.bnav{height:var(--nav);background:var(--white);border-top:1px solid var(--g200);display:flex;align-items:center;justify-content:space-around;padding:0 4px;flex-shrink:0;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;cursor:pointer;position:relative;}
+.ni-icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:background .2s;}
+.ni-icon svg{fill:var(--g400);width:20px;height:20px;transition:fill .2s;}
+.ni-lbl{font-size:9px;font-weight:600;color:var(--g400);transition:color .2s;}
+.ni.active .ni-icon svg{fill:var(--red);}
+.ni.active .ni-lbl{color:var(--red);}
+.ni-badge{position:absolute;top:3px;right:calc(50% - 19px);width:13px;height:13px;background:var(--red);border-radius:50%;font-size:8px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--white);}
+
+/* ─── LOGO SVG ─── */
+.logo-svg{width:44px;height:44px;}
+
+/* ─── ACCUEIL ─── */
+.home-top{padding:16px 16px 0;}
+.g-sub{font-size:12px;color:var(--g500);margin-bottom:1px;}
+.g-name{font-size:20px;font-weight:800;color:var(--black);}
+.g-role-tag{display:inline-block;background:rgba(227,0,27,.1);color:var(--red);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:4px;margin-top:4px;}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:12px 16px 0;}
+.stat-card{background:var(--white);border-radius:var(--r);padding:13px;box-shadow:var(--shadow);}
+.stat-card-title{font-size:10px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.stat-big{font-size:30px;font-weight:800;font-family:var(--fontc);}
+.stat-big.red{color:var(--red);} .stat-big.green{color:var(--success);}
+.stat-sub{font-size:10px;color:var(--g500);margin-top:2px;}
+.pmini{height:5px;background:var(--g200);border-radius:3px;overflow:hidden;margin-top:7px;}
+.pmini-fill{height:100%;border-radius:3px;}
+.sec-title{font-size:11px;font-weight:700;color:var(--g500);letter-spacing:2px;text-transform:uppercase;padding:14px 16px 7px;display:flex;align-items:center;justify-content:space-between;}
+.sec-add-btn{width:22px;height:22px;background:var(--red);border-radius:50%;border:none;color:#fff;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ac-notif-card{margin:0 16px 7px;background:var(--white);border-radius:var(--r);padding:11px 13px;border-left:3px solid var(--warn);box-shadow:var(--shadow);}
+.ac-notif-title{font-size:13px;font-weight:700;color:var(--black);margin-bottom:2px;}
+.ac-notif-sub{font-size:11px;color:var(--g500);}
+.ri{margin:0 16px 7px;background:var(--white);border-radius:var(--r);padding:11px 13px;display:flex;align-items:flex-start;gap:9px;border-left:3px solid var(--red);cursor:pointer;box-shadow:var(--shadow);}
+.ri.med{border-left-color:var(--warn);} .ri.low{border-left-color:var(--info);}
+.ri-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:4px;}
+.ri.med .ri-dot{background:var(--warn);} .ri.low .ri-dot{background:var(--info);}
+.ri-c{flex:1;} .ri-title{font-size:13px;font-weight:700;color:var(--black);}
+.ri-loc{font-size:11px;color:var(--g500);margin-top:1px;}
+.ri-prio{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;margin-left:auto;flex-shrink:0;}
+.ph{background:rgba(227,0,27,.1);color:var(--red);} .pm{background:rgba(217,119,6,.1);color:var(--warn);} .pl{background:rgba(37,99,235,.1);color:var(--info);}
+.blocked-item{margin:0 16px 7px;background:var(--white);border-radius:var(--r);padding:11px 13px;display:flex;align-items:flex-start;gap:9px;box-shadow:var(--shadow);border-left:3px solid var(--g300);}
+.bi-icon{font-size:15px;flex-shrink:0;}
+.bi-title{font-size:13px;font-weight:700;color:var(--black);}
+.bi-reason{font-size:11px;color:var(--warn);margin-top:2px;}
+
+/* ─── CHAT ─── */
+.chat-search-wrap{padding:9px 16px;background:var(--white);border-bottom:1px solid var(--g200);}
+.chat-srch-inp{width:100%;background:var(--g100);border:none;border-radius:8px;padding:8px 12px;color:var(--black);font-family:var(--font);font-size:13px;outline:none;}
+.cgi{padding:10px 16px;display:flex;align-items:center;gap:10px;cursor:pointer;border-bottom:1px solid var(--g100);transition:background .15s;background:var(--white);}
+.cgi:hover{background:var(--g50);}
+.cav{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.cav-red{background:rgba(227,0,27,.12);} .cav-blue{background:rgba(37,99,235,.12);}
+.cav-green{background:rgba(22,163,74,.12);} .cav-orange{background:rgba(217,119,6,.12);}
+.cav-purple{background:rgba(124,58,237,.12);} .cav-gray{background:var(--g100);}
+.cav-teal{background:rgba(15,118,110,.12);}
+.cgi-info{flex:1;overflow:hidden;}
+.cgi-name{font-size:13px;font-weight:700;color:var(--black);}
+.cgi-prev{font-size:11px;color:var(--g500);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cgi-meta{display:flex;flex-direction:column;align-items:flex-end;gap:3px;}
+.cgi-time{font-size:10px;color:var(--g400);}
+.cunread{background:var(--red);color:#fff;font-size:9px;font-weight:700;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+
+/* ─── CONV ─── */
+#scr-conv{top:44px;background:var(--bg);}
+.conv-hdr{background:var(--white);padding:10px 14px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.bck{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.bck svg{fill:var(--red);width:18px;height:18px;}
+.conv-name{font-size:14px;font-weight:700;color:var(--black);flex:1;}
+.conv-members{font-size:10px;color:var(--g500);}
+.chat-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch;}
+.chat-msgs::-webkit-scrollbar{display:none;}
+.cmsg{max-width:82%;} .cmsg.mine{align-self:flex-end;} .cmsg.other{align-self:flex-start;}
+.cmsg-sender{font-size:10px;color:var(--g500);margin-bottom:2px;font-weight:600;}
+.cmsg-bubble{padding:9px 12px;border-radius:12px;}
+.cmsg.mine .cmsg-bubble{background:var(--red);border-bottom-right-radius:3px;}
+.cmsg.other .cmsg-bubble{background:var(--white);border-bottom-left-radius:3px;box-shadow:var(--shadow);}
+.cmsg-translated{font-size:13px;color:#fff;font-weight:600;line-height:1.45;}
+.cmsg.other .cmsg-bubble .cmsg-translated{color:var(--black);}
+.cmsg-original{font-size:10px;color:rgba(255,255,255,.6);font-style:italic;margin-top:4px;border-top:1px solid rgba(255,255,255,.2);padding-top:4px;}
+.cmsg.other .cmsg-bubble .cmsg-original{color:var(--g400);border-top-color:var(--g200);}
+.cmsg-plain{font-size:13px;line-height:1.45;}
+.cmsg.mine .cmsg-plain{color:#fff;} .cmsg.other .cmsg-plain{color:var(--black);}
+.lpill{display:inline-block;background:rgba(227,0,27,.12);color:var(--red);font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;margin-left:4px;}
+.cmsg-time{font-size:9px;color:var(--g400);margin-top:2px;}
+.cmsg.other .cmsg-time{text-align:left;} .cmsg.mine .cmsg-time{text-align:right;}
+.photo-msg{width:160px;height:100px;background:var(--g200);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:3px;overflow:hidden;position:relative;}
+.photo-lbl{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.5);padding:3px 7px;font-size:10px;color:#fff;font-weight:600;}
+.chat-inp-bar{background:var(--white);border-top:1px solid var(--g200);padding:8px 12px;display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.chat-inp{flex:1;background:var(--g100);border:none;border-radius:20px;padding:8px 12px;color:var(--black);font-family:var(--font);font-size:13px;outline:none;}
+.chat-send{width:34px;height:34px;background:var(--red);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.chat-send svg{fill:#fff;width:14px;height:14px;}
+.chat-att{width:32px;height:32px;background:var(--g100);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.chat-att svg{fill:var(--g500);width:14px;height:14px;}
+
+/* ─── RESERVE FORM ─── */
+#scr-reserve{top:44px;background:var(--white);}
+.form-hdr{background:var(--white);padding:10px 14px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.form-hdr-title{font-size:14px;font-weight:800;color:var(--black);}
+.form-body{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;}
+.form-body::-webkit-scrollbar{display:none;}
+.photo-zone{width:100%;height:120px;background:var(--g50);border:2px dashed var(--g300);border-radius:var(--r);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;margin-bottom:12px;}
+.photo-zone svg{fill:var(--g400);width:24px;height:24px;}
+.photo-zone-txt{font-size:12px;color:var(--g500);font-weight:600;}
+.photo-prev{display:none;width:100%;height:120px;background:var(--g100);border-radius:var(--r);margin-bottom:12px;position:relative;overflow:hidden;align-items:center;justify-content:center;font-size:36px;}
+.photo-prev.show{display:flex;}
+.photo-prev-ov{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.5);padding:5px 9px;display:flex;align-items:center;justify-content:space-between;}
+.photo-prev-lbl{font-size:11px;color:#fff;font-weight:600;}
+.photo-prev-chg{font-size:10px;color:#ffccc;font-weight:600;cursor:pointer;color:#fca5a5;}
+.prio-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:12px;}
+.prio-btn{padding:8px 5px;border-radius:var(--rsm);border:1.5px solid var(--g200);background:var(--g50);color:var(--g500);font-family:var(--font);font-size:11px;font-weight:700;text-align:center;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.prio-btn.low.sel{border-color:var(--info);background:rgba(37,99,235,.08);color:var(--info);}
+.prio-btn.med.sel{border-color:var(--warn);background:rgba(217,119,6,.08);color:var(--warn);}
+.prio-btn.high.sel{border-color:var(--red);background:rgba(227,0,27,.08);color:var(--red);}
+.submit-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:var(--rsm);padding:13px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;}
+
+/* ─── TACHES ─── */
+.tasks-subtabs{display:flex;background:var(--white);border-bottom:1px solid var(--g200);padding:0 16px;gap:4px;flex-shrink:0;overflow-x:auto;}
+.tasks-subtabs::-webkit-scrollbar{display:none;}
+.tst{padding:11px 6px;font-size:12px;font-weight:700;color:var(--g500);cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;flex-shrink:0;}
+.tst.active{color:var(--red);border-bottom-color:var(--red);}
+
+/* LPS */
+.lps-hdr-row{padding:12px 16px 7px;display:flex;align-items:center;justify-content:space-between;}
+.lps-week-lbl{font-size:14px;font-weight:800;color:var(--black);}
+.lps-nav-btns{display:flex;gap:5px;}
+.lps-nav-btn{width:28px;height:28px;background:var(--white);border:1.5px solid var(--g200);border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.lps-nav-btn svg{stroke:var(--g500);width:12px;height:12px;}
+.lps-table-wrap{overflow-x:auto;padding:0 16px 10px;-webkit-overflow-scrolling:touch;}
+.lps-table-wrap::-webkit-scrollbar{height:3px;}
+.lps-table-wrap::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px;}
+.lps-tbl{border-collapse:collapse;min-width:560px;width:100%;}
+.lps-th{background:var(--g100);padding:5px 6px;font-size:9px;font-weight:700;color:var(--g500);letter-spacing:.8px;text-transform:uppercase;text-align:center;border:1px solid var(--g200);white-space:nowrap;}
+.lps-th.today{color:var(--red);} .lps-th.zone-hdr{text-align:left;color:var(--black);background:var(--g50);min-width:65px;}
+.lps-td{border:1px solid var(--g200);padding:3px;vertical-align:top;min-width:66px;height:46px;cursor:pointer;transition:background .15s;background:var(--white);}
+.lps-td:hover{background:rgba(227,0,27,.04);}
+.lps-td.zlbl{background:var(--g50);padding:5px 7px;cursor:default;}
+.lps-td.zlbl:hover{background:var(--g50);}
+.zlbl-txt{font-size:10px;font-weight:700;color:var(--black);}
+/* Chip colors adapted for light theme */
+.lps-chip{font-size:9px;font-weight:700;border-radius:4px;padding:2px 4px;margin:1px;display:block;line-height:1.3;border-left:2px solid transparent;cursor:context-menu;}
+.cp{background:rgba(37,99,235,.12);border-left-color:#2563eb;color:#1d4ed8;}
+.ce{background:rgba(22,163,74,.12);border-left-color:#16a34a;color:#15803d;}
+.cm{background:rgba(217,119,6,.12);border-left-color:#d97706;color:#b45309;}
+.cn{background:rgba(124,58,237,.12);border-left-color:#7c3aed;color:#6d28d9;}
+.cme{background:rgba(15,118,110,.12);border-left-color:#0f766e;color:#0d6b63;}
+.cv{background:rgba(220,38,38,.12);border-left-color:#dc2626;color:#b91c1c;}
+.cdone{opacity:.5;text-decoration:line-through;}
+/* Not done: striped */
+.cnotdone{opacity:.6;background:repeating-linear-gradient(45deg,rgba(0,0,0,.04),rgba(0,0,0,.04) 2px,transparent 2px,transparent 6px)!important;color:var(--g500)!important;border-left-color:var(--g300)!important;}
+.cblocked{background:rgba(220,38,38,.15);border-left-color:var(--red);color:var(--red);}
+.lps-add{font-size:10px;color:var(--g400);text-align:center;margin-top:2px;}
+.prom-wrap{padding:7px 16px 0;}
+.prom-title{font-size:11px;font-weight:700;color:var(--g500);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.prom-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.prom-name{font-size:11px;color:var(--black);width:90px;flex-shrink:0;font-weight:600;}
+.prom-bar-w{flex:1;height:7px;background:var(--g200);border-radius:4px;overflow:hidden;}
+.prom-fill{height:100%;border-radius:4px;}
+.prom-pct{font-size:11px;font-weight:700;color:var(--black);width:30px;text-align:right;}
+
+/* ─── LPS mini modal (long press) ─── */
+.lps-action-mo{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);z-index:600;display:none;align-items:flex-end;}
+.lps-action-mo.show{display:flex;}
+.lps-action-box{background:var(--white);border-radius:16px 16px 0 0;width:100%;padding:16px;}
+.lps-action-title{font-size:13px;font-weight:700;color:var(--black);margin-bottom:12px;text-align:center;}
+.lps-action-btn{width:100%;padding:13px;border-radius:var(--rsm);border:none;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;}
+.btn-done{background:rgba(22,163,74,.1);color:var(--success);}
+.btn-notdone{background:rgba(100,100,100,.1);color:var(--g600);}
+.btn-cancel{background:var(--g100);color:var(--g600);}
+
+/* LPS ADD MODAL */
+.lps-mo{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);z-index:500;display:none;align-items:flex-end;}
+.lps-mo.show{display:flex;}
+.lps-mo-box{background:var(--white);border-radius:16px 16px 0 0;width:100%;padding:18px;max-height:65%;overflow-y:auto;}
+.lps-mo-box::-webkit-scrollbar{display:none;}
+.lps-mo-title{font-size:14px;font-weight:800;color:var(--black);margin-bottom:12px;}
+.lps-mo-task{padding:9px 11px;background:var(--g50);border-radius:var(--rsm);margin-bottom:6px;cursor:pointer;display:flex;align-items:center;gap:8px;border:1px solid var(--g200);}
+.lps-mo-task-name{font-size:12px;font-weight:600;color:var(--black);flex:1;}
+.lps-mo-close{width:100%;background:var(--g100);border:none;border-radius:var(--rsm);padding:11px;color:var(--g600);font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;margin-top:6px;}
+
+/* ─── TABLEAU PROGRESSION ─── */
+.prog-wrap{padding:0 16px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.prog-wrap::-webkit-scrollbar{height:3px;}
+.prog-wrap::-webkit-scrollbar-thumb{background:var(--red);border-radius:2px;}
+.prog-table{border-collapse:collapse;min-width:700px;width:100%;}
+.prog-th{background:var(--g100);padding:5px 7px;font-size:9px;font-weight:700;color:var(--g500);letter-spacing:.6px;text-transform:uppercase;border:1px solid var(--g200);white-space:nowrap;text-align:center;}
+.prog-th.left{text-align:left;}
+.prog-td{border:1px solid var(--g200);padding:3px 5px;font-size:10px;color:var(--black);text-align:center;background:var(--white);white-space:nowrap;}
+.prog-td.label{text-align:left;font-weight:700;background:var(--g50);min-width:80px;}
+.prog-td.sublabel{text-align:left;font-size:9px;color:var(--g500);background:var(--white);padding-left:12px;}
+.prog-td.ent{font-weight:800;font-size:10px;background:var(--g100);vertical-align:middle;}
+.prog-cell{display:inline-block;min-width:32px;padding:2px 5px;border-radius:4px;font-size:10px;font-weight:700;}
+.pct-high{background:rgba(22,163,74,.15);color:var(--success);}
+.pct-mid{background:rgba(217,119,6,.15);color:var(--warn);}
+.pct-low{background:rgba(220,38,38,.12);color:var(--red);}
+.pct-none{color:var(--g300);}
+.prog-hdr-row{padding:12px 16px 8px;display:flex;align-items:center;justify-content:space-between;}
+.prog-hdr-title{font-size:14px;font-weight:800;color:var(--black);}
+.prog-legend{display:flex;gap:10px;padding:0 16px 8px;flex-wrap:wrap;}
+.prog-leg-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--g500);}
+.prog-leg-dot{width:8px;height:8px;border-radius:2px;}
+
+/* ─── FICHES ─── */
+.co-sel-wrap{padding:12px 16px;}
+.co-sel-title{font-size:13px;font-weight:700;color:var(--black);margin-bottom:10px;}
+.co-btn{width:100%;background:var(--white);border:1px solid var(--g200);border-radius:var(--rsm);padding:11px 14px;margin-bottom:7px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .15s;font-family:var(--font);text-align:left;box-shadow:var(--shadow);}
+.co-btn:hover{background:var(--g50);}
+.co-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.co-btn-name{font-size:13px;font-weight:700;color:var(--black);}
+.co-btn-lot{font-size:11px;color:var(--g500);}
+.co-arrow{margin-left:auto;color:var(--g400);font-size:16px;}
+.fc-hdr{padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--g200);background:var(--white);}
+.fc-bck{width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.fc-bck svg{fill:var(--red);width:16px;height:16px;}
+.fc-title{font-size:13px;font-weight:800;color:var(--black);flex:1;}
+.fc-add{padding:5px 10px;background:var(--red);color:#fff;border:none;border-radius:6px;font-family:var(--font);font-size:11px;font-weight:700;cursor:pointer;}
+.tc2{margin:0 16px 7px;border-radius:var(--r);overflow:hidden;cursor:pointer;transition:opacity .15s;border:1px solid var(--g200);background:var(--white);box-shadow:var(--shadow);}
+.tc2:hover{opacity:.85;}
+.tc2-hdr{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;}
+.tc2-title{font-size:13px;font-weight:700;color:var(--black);}
+.tc2-st{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;text-transform:uppercase;flex-shrink:0;}
+.tc2-body{padding:4px 12px 10px;} .tc2-loc{font-size:10px;color:var(--g500);}
+.sb{background:rgba(220,38,38,.1);color:var(--red);} .sp{background:rgba(37,99,235,.1);color:var(--info);}
+.sd{background:rgba(22,163,74,.1);color:var(--success);} .st{background:var(--g100);color:var(--g500);}
+
+/* TASK DETAIL */
+#scr-td{background:var(--bg);top:44px;}
+.det-hdr{background:var(--white);padding:10px 14px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.det-bc{font-size:11px;color:var(--g500);}
+.det-body{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch;}
+.det-body::-webkit-scrollbar{display:none;}
+.det-title{font-size:18px;font-weight:800;color:var(--black);font-family:var(--fontc);text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;}
+.det-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:13px;}
+.det-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;}
+.det-sec-title{font-size:10px;font-weight:700;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.det-instr{background:var(--white);border-radius:var(--rsm);padding:11px;font-size:13px;color:var(--black);line-height:1.6;outline:none;width:100%;min-height:72px;border:1.5px solid var(--g200);transition:border-color .2s;font-family:var(--font);resize:vertical;}
+.det-instr:focus{border-color:var(--red);}
+.det-edit-hint{font-size:10px;color:var(--g400);margin-top:3px;margin-bottom:12px;}
+.bl-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.bl-item{background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.2);border-radius:8px;padding:9px 11px;}
+.bl-item-title{font-size:12px;font-weight:700;color:var(--black);}
+.bl-item-reason{font-size:10px;color:var(--warn);margin-top:1px;}
+.add-bl-btn{background:var(--g50);border:1.5px dashed var(--g300);border-radius:8px;padding:9px;width:100%;color:var(--g500);font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;text-align:center;}
+.det-docs-wrap{display:flex;gap:6px;flex-wrap:wrap;}
+.det-doc{display:flex;align-items:center;gap:5px;padding:7px 10px;background:var(--white);border:1px solid var(--g200);border-radius:8px;font-size:11px;font-weight:600;color:var(--black);cursor:pointer;}
+.det-doc svg{fill:var(--red);width:14px;height:14px;}
+.det-sec{margin-bottom:13px;}
+
+/* ─── AUTOCONTROLES ─── */
+/* Step 1: company select - reuses co-sel-wrap */
+/* Step 2: apartment list */
+.ac-zone-section{padding:0 16px 6px;}
+.ac-zone-hdr{font-size:11px;font-weight:700;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;padding:12px 0 7px;}
+.ac-apt-btn{width:100%;background:var(--white);border:1px solid var(--g200);border-radius:var(--rsm);padding:10px 13px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:var(--font);box-shadow:var(--shadow);}
+.ac-apt-name{font-size:13px;font-weight:700;color:var(--black);}
+.ac-apt-pct{font-size:11px;font-weight:700;color:var(--success);}
+.ac-apt-pct.partial{color:var(--warn);}
+.ac-apt-pct.none{color:var(--g400);}
+/* Step 3: checklist */
+.ac-check-hdr{background:var(--white);padding:10px 16px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.ac-check-zone{font-size:14px;font-weight:800;color:var(--black);}
+.ac-check-co{font-size:11px;color:var(--g500);margin-top:1px;}
+.ac-check-section{padding:8px 16px 0;}
+.ac-sec-label{font-size:10px;font-weight:700;color:var(--g500);letter-spacing:1.2px;text-transform:uppercase;padding:8px 0 5px;border-top:1px solid var(--g200);}
+.ac-check-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--white);border-radius:var(--rsm);margin-bottom:5px;cursor:pointer;border:1px solid var(--g200);}
+.acc-cb{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--g300);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.acc-cb.checked{background:var(--success);border-color:var(--success);}
+.acc-cb svg{fill:#fff;width:10px;height:10px;display:none;}
+.acc-cb.checked svg{display:block;}
+.acc-item-txt{font-size:12px;color:var(--black);flex:1;}
+.acc-item-txt.done{text-decoration:line-through;color:var(--g400);}
+
+/* ─── DOCUMENTS ─── */
+.docs-folder-hdr{background:var(--white);padding:10px 14px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.docs-folder-hdr-name{font-size:14px;font-weight:800;color:var(--black);flex:1;}
+.doc-folder-card{background:var(--white);border-radius:var(--r);margin:0 16px 10px;padding:14px 16px;display:flex;align-items:center;gap:13px;cursor:pointer;box-shadow:var(--shadow);border:1px solid var(--g200);transition:background .15s;}
+.doc-folder-card:hover{background:var(--g50);}
+.doc-folder-icon{width:44px;height:44px;border-radius:10px;background:rgba(227,0,27,.09);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.doc-folder-info{flex:1;}
+.doc-folder-name{font-size:13px;font-weight:700;color:var(--black);}
+.doc-folder-count{font-size:11px;color:var(--g500);margin-top:2px;}
+.doc-folder-arrow{font-size:18px;color:var(--g400);}
+.docs-srch-inp{width:100%;background:var(--g100);border:none;border-radius:8px;padding:8px 12px;color:var(--black);font-family:var(--font);font-size:13px;outline:none;}
+.doc-cat-wrap{padding:0 16px 8px;}
+.doc-cat-hdr{font-size:11px;font-weight:700;color:var(--g500);letter-spacing:1.5px;text-transform:uppercase;padding:13px 0 7px;display:flex;align-items:center;gap:7px;}
+.doc-cat-icon{font-size:16px;}
+.doc-item{background:var(--white);border:1px solid var(--g200);border-radius:var(--rsm);padding:10px 13px;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:var(--shadow);transition:background .15s;}
+.doc-item:hover{background:var(--g50);}
+.doc-file-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.doc-file-pdf{background:rgba(220,38,38,.1);}
+.doc-file-dwg{background:rgba(37,99,235,.1);}
+.doc-file-xls{background:rgba(22,163,74,.1);}
+.doc-file-img{background:rgba(124,58,237,.1);}
+.doc-info{flex:1;overflow:hidden;}
+.doc-name{font-size:13px;font-weight:700;color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.doc-meta{font-size:10px;color:var(--g500);margin-top:1px;}
+.doc-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;flex-shrink:0;}
+.doc-new{background:rgba(227,0,27,.1);color:var(--red);}
+.doc-upload-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:var(--rsm);padding:12px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;margin:4px 0 10px;display:flex;align-items:center;justify-content:center;gap:7px;}
+.doc-upload-btn svg{fill:#fff;width:15px;height:15px;}
+
+/* ─── AI ASSISTANT ─── */
+.ai-hdr-wrap{background:var(--white);padding:12px 16px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+.ai-hdr-top{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.ai-avatar{width:38px;height:38px;background:linear-gradient(135deg,#E3001B,#ff6b35);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.ai-hdr-name{font-size:15px;font-weight:800;color:var(--black);}
+.ai-hdr-sub{font-size:11px;color:var(--g500);}
+.ai-online{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--success);font-weight:600;}
+.ai-online-dot{width:6px;height:6px;border-radius:50%;background:var(--success);}
+.ai-chips-wrap{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;}
+.ai-chips-wrap::-webkit-scrollbar{display:none;}
+.ai-chip{flex-shrink:0;padding:5px 10px;background:var(--g100);border:1px solid var(--g200);border-radius:20px;font-size:11px;font-weight:600;color:var(--g600);cursor:pointer;white-space:nowrap;transition:all .2s;}
+.ai-chip:hover{background:rgba(227,0,27,.08);border-color:var(--red);color:var(--red);}
+.ai-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch;}
+.ai-msgs::-webkit-scrollbar{display:none;}
+.ai-msg{max-width:86%;}
+.ai-msg.user{align-self:flex-end;}
+.ai-msg.bot{align-self:flex-start;}
+.ai-bubble{padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.55;}
+.ai-msg.user .ai-bubble{background:var(--red);color:#fff;border-bottom-right-radius:3px;}
+.ai-msg.bot .ai-bubble{background:var(--white);color:var(--black);border-bottom-left-radius:3px;box-shadow:var(--shadow-md);}
+.ai-typing{display:flex;gap:4px;align-items:center;padding:2px 0;}
+.ai-typing span{width:6px;height:6px;border-radius:50%;background:var(--g400);animation:typing .8s infinite;}
+.ai-typing span:nth-child(2){animation-delay:.15s;}
+.ai-typing span:nth-child(3){animation-delay:.3s;}
+@keyframes typing{0%,80%,100%{transform:scale(.8);opacity:.5;}40%{transform:scale(1.1);opacity:1;}}
+.ai-inp-bar{background:var(--white);border-top:1px solid var(--g200);padding:8px 12px;display:flex;align-items:center;gap:7px;flex-shrink:0;}
+.ai-inp{flex:1;background:var(--g100);border:none;border-radius:20px;padding:9px 13px;color:var(--black);font-family:var(--font);font-size:13px;outline:none;}
+.ai-send{width:36px;height:36px;background:var(--red);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.ai-send svg{fill:#fff;width:14px;height:14px;}
+.ai-send:disabled{background:var(--g300);cursor:not-allowed;}
+.ai-msg-time{font-size:9px;color:var(--g400);margin-top:2px;}
+.ai-msg.user .ai-msg-time{text-align:right;} .ai-msg.bot .ai-msg-time{text-align:left;}
+
+/* ─── GENERAL SCREEN ─── */
+#scr-ac-detail{top:44px;background:var(--bg);}
+.gen-hdr{background:var(--white);padding:10px 14px;display:flex;align-items:center;gap:9px;border-bottom:1px solid var(--g200);flex-shrink:0;}
+
+/* TOAST */
+.toast{position:absolute;bottom:calc(var(--nav)+12px);left:16px;right:16px;background:var(--success);color:#fff;border-radius:var(--rsm);padding:11px 13px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:7px;transform:translateY(90px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);z-index:999;box-shadow:var(--shadow-md);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast svg{fill:#fff;width:16px;height:16px;flex-shrink:0;}
+
+/* ADD TASK MODAL */
+.add-task-mo{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);z-index:600;display:none;align-items:flex-end;}
+.add-task-mo.show{display:flex;}
+.add-task-box{background:var(--white);border-radius:16px 16px 0 0;width:100%;padding:18px;}
+.add-task-title{font-size:14px;font-weight:800;color:var(--black);margin-bottom:12px;}
+
+/* PROG CLICKABLE CELLS */
+.prog-td-click{cursor:pointer;transition:background .15s;}
+.prog-td-click:hover{background:rgba(227,0,27,.07)!important;}
+.pct-high-bg{background:rgba(22,163,74,.05);}
+.pct-mid-bg{background:rgba(217,119,6,.05);}
+.pct-low-bg{background:rgba(220,38,38,.05);}
+
+/* PROG MODAL */
+.prog-mo{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.4);z-index:700;display:none;align-items:flex-end;}
+.prog-mo.show{display:flex;}
+.prog-mo-box{background:var(--white);border-radius:16px 16px 0 0;width:100%;padding:20px 18px 28px;}
+.prog-mo-title{font-size:15px;font-weight:800;color:var(--black);margin-bottom:2px;}
+.prog-mo-sub{font-size:11px;color:var(--g500);margin-bottom:16px;}
+.prog-mo-slider-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.prog-mo-slider{flex:1;accent-color:var(--red);}
+.prog-mo-val{font-size:18px;font-weight:800;color:var(--red);min-width:44px;text-align:right;}
+.prog-mo-btns{display:flex;gap:8px;}
+.prog-mo-save{flex:1;background:var(--red);color:#fff;border:none;border-radius:var(--rsm);padding:12px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;}
+.prog-mo-cancel{background:var(--g100);color:var(--g600);border:none;border-radius:var(--rsm);padding:12px 16px;font-family:var(--font);font-size:14px;cursor:pointer;}
+
+/* DEP ALERT */
+.dep-alert-mo{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:800;display:none;align-items:center;justify-content:center;padding:24px;}
+.dep-alert-mo.show{display:flex;}
+.dep-alert-box{background:var(--white);border-radius:14px;padding:20px;width:100%;border-top:4px solid var(--warn);}
+.dep-alert-icon{font-size:28px;margin-bottom:8px;}
+.dep-alert-title{font-size:15px;font-weight:800;color:var(--black);margin-bottom:8px;}
+.dep-alert-msg{font-size:12px;color:var(--g600);line-height:1.6;white-space:pre-line;margin-bottom:14px;}
+.dep-alert-ok{width:100%;background:var(--warn);color:#fff;border:none;border-radius:var(--rsm);padding:12px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;}
+
+select option{background:var(--white);color:var(--black);}
+.slide-in{animation:si .22s ease-out;}
+@keyframes si{from{transform:translateX(24px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+</style>
+</head>
+<body>
+<div class="phone">
+
+<!-- STATUS BAR -->
+<div class="sbar">
+  <span class="sbar-time" id="stime">09:41</span>
+  <div class="sbar-icons">
+    <svg width="16" height="12" viewBox="0 0 16 12"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4" y="2" width="3" height="10" rx="1"/><rect x="8" y="0" width="3" height="12" rx="1"/><rect x="12" y="0" width="3" height="12" rx="1" opacity=".3"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 2C5.5 2 3.3 3 1.7 4.6L0 3C2 1.1 4.9 0 8 0s6 1.1 8 3l-1.7 1.6C12.7 3 10.5 2 8 2zM8 6c-1.5 0-2.8.6-3.8 1.5L2.5 5.8C3.9 4.7 5.8 4 8 4s4.1.7 5.5 1.8l-1.7 1.7C10.8 6.6 9.5 6 8 6zm0 4a2 2 0 100 4 2 2 0 000-4z"/></svg>
+    <svg width="25" height="12" viewBox="0 0 25 12"><rect x="0" y="1" width="22" height="10" rx="3" stroke="#111" stroke-width="1.5" fill="none"/><rect x="23" y="4" width="2" height="4" rx="1" fill="#111" opacity=".5"/><rect x="1.5" y="2.5" width="16" height="7" rx="2" fill="#111"/></svg>
+  </div>
+</div>
+
+<!-- LANG -->
+<div class="screen active" id="scr-lang">
+  <div class="lang-logo">
+    <svg width="90" height="76" viewBox="0 0 90 76" xmlns="http://www.w3.org/2000/svg">
+      <!-- 3 bandes rouges horizontales -->
+      <rect x="0" y="0" width="90" height="18" fill="#E3001B" rx="3"/>
+      <rect x="0" y="29" width="90" height="18" fill="#E3001B" rx="3"/>
+      <rect x="0" y="58" width="90" height="18" fill="#E3001B" rx="3"/>
+      <!-- Grue -->
+      <!-- Mât vertical -->
+      <rect x="41" y="8" width="8" height="62" fill="#111"/>
+      <!-- Flèche horizontale -->
+      <rect x="10" y="8" width="60" height="5" fill="#222"/>
+      <!-- Contreventement flèche (diagonales) -->
+      <line x1="45" y1="13" x2="70" y2="8" stroke="#333" stroke-width="1.5"/>
+      <line x1="45" y1="13" x2="20" y2="8" stroke="#333" stroke-width="1.5"/>
+      <!-- Cabine opérateur -->
+      <rect x="38" y="20" width="14" height="10" rx="2" fill="#E3001B"/>
+      <rect x="40" y="22" width="4" height="5" rx="1" fill="rgba(255,255,255,0.6)"/>
+      <!-- Câble -->
+      <line x1="68" y1="13" x2="68" y2="38" stroke="#555" stroke-width="1.5"/>
+      <!-- Crochet -->
+      <path d="M65 38 Q65 43 68 43 Q71 43 71 38" fill="none" stroke="#555" stroke-width="2"/>
+      <!-- Base/socle -->
+      <rect x="36" y="68" width="18" height="4" rx="1" fill="#222"/>
+      <rect x="30" y="72" width="30" height="3" rx="1" fill="#333"/>
+    </svg>
+  </div>
+  <div class="lang-appname">EIFFAGE <span>CHANTIER</span></div>
+  <div class="lang-sub">Application de chantier digitalisée</div>
+  <div class="lang-title">Choisissez votre langue</div>
+  <div class="lang-hint">Tout s'affichera dans votre langue</div>
+  <div class="lang-grid">
+    <button class="lang-btn sel" data-lang="fr" onclick="selLang(this)"><span class="lang-flag">🇫🇷</span>Français</button>
+    <button class="lang-btn" data-lang="en" onclick="selLang(this)"><span class="lang-flag">🇬🇧</span>English</button>
+    <button class="lang-btn" data-lang="pt" onclick="selLang(this)"><span class="lang-flag">🇵🇹</span>Português</button>
+    <button class="lang-btn" data-lang="ar" onclick="selLang(this)"><span class="lang-flag">🇲🇦</span>العربية</button>
+    <button class="lang-btn" data-lang="ro" onclick="selLang(this)"><span class="lang-flag">🇷🇴</span>Română</button>
+    <button class="lang-btn" data-lang="pl" onclick="selLang(this)"><span class="lang-flag">🇵🇱</span>Polski</button>
+  </div>
+  <button class="lang-confirm" onclick="confirmLang()">Confirmer →</button>
+</div>
+
+<!-- LOGIN -->
+<div class="screen" id="scr-login">
+  <div class="login-inner">
+    <div class="login-logo">
+      <svg width="72" height="62" viewBox="0 0 90 76" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:6px">
+        <rect x="0" y="0" width="90" height="18" fill="#E3001B" rx="3"/>
+        <rect x="0" y="29" width="90" height="18" fill="#E3001B" rx="3"/>
+        <rect x="0" y="58" width="90" height="18" fill="#E3001B" rx="3"/>
+        <rect x="41" y="8" width="8" height="62" fill="#111"/>
+        <rect x="10" y="8" width="60" height="5" fill="#222"/>
+        <line x1="45" y1="13" x2="70" y2="8" stroke="#333" stroke-width="1.5"/>
+        <line x1="45" y1="13" x2="20" y2="8" stroke="#333" stroke-width="1.5"/>
+        <rect x="38" y="20" width="14" height="10" rx="2" fill="#E3001B"/>
+        <rect x="40" y="22" width="4" height="5" rx="1" fill="rgba(255,255,255,0.6)"/>
+        <line x1="68" y1="13" x2="68" y2="38" stroke="#555" stroke-width="1.5"/>
+        <path d="M65 38 Q65 43 68 43 Q71 43 71 38" fill="none" stroke="#555" stroke-width="2"/>
+        <rect x="36" y="68" width="18" height="4" rx="1" fill="#222"/>
+        <rect x="30" y="72" width="30" height="3" rx="1" fill="#333"/>
+      </svg>
+      <div class="login-appname">EIFFAGE <span>CHANTIER</span></div>
+    </div>
+    <div class="form-w">
+      <label class="flbl">Mon profil</label>
+      <select class="fselect" id="l-role"><option value="ct">Conducteur de travaux</option><option value="chef">Chef de chantier</option><option value="st">Sous-traitant</option><option value="dir">Directeur de projet</option></select>
+      <label class="flbl">Nom / Prénom</label>
+      <input class="finput" id="l-name" type="text" placeholder="ex : Jean Dupont" value="Étienne Martin">
+      <label class="flbl">Entreprise</label>
+      <select class="fselect" id="l-company"><option value="eiffage">Eiffage Construction</option><option value="nagla">Nagla</option><option value="jr77">JR77</option><option value="erp">ERP Système</option><option value="idtp">IDTP</option><option value="ees">EES</option><option value="bouille">Menuiserie Bouille</option><option value="nadalon">Nadalon</option></select>
+      <label class="flbl">Clé de sécurité</label>
+      <div class="key-row"><input class="finput" id="l-key" type="text" placeholder="ex : EC-2025-XXXX" maxlength="14"><button class="key-validate" onclick="validateKey()">Valider</button></div>
+      <div class="key-ok" id="key-ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>Clé validée ✓</div>
+      <label class="flbl">Chantier</label>
+      <select class="fselect" id="l-chantier" disabled><option value="">— Validez votre clé d'abord —</option><option value="labachotte">Projet LABACHOTTE — Sens (89)</option><option value="sncf">Projet SNCF — Migennes (89)</option></select>
+      <button class="login-btn" onclick="doLogin()">Accéder au chantier →</button>
+      <div class="login-qr">Connexion via QR Code → <span onclick="doLogin()">Scanner</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="screen" id="scr-app">
+  <div class="app-hdr">
+    <div class="hdr-logo">
+      <svg width="28" height="24" viewBox="0 0 90 76" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="90" height="18" fill="#E3001B" rx="3"/>
+        <rect x="0" y="29" width="90" height="18" fill="#E3001B" rx="3"/>
+        <rect x="0" y="58" width="90" height="18" fill="#E3001B" rx="3"/>
+        <rect x="41" y="8" width="8" height="62" fill="#111"/>
+        <rect x="10" y="8" width="60" height="5" fill="#222"/>
+        <line x1="45" y1="13" x2="70" y2="8" stroke="#333" stroke-width="1.5"/>
+        <line x1="45" y1="13" x2="20" y2="8" stroke="#333" stroke-width="1.5"/>
+        <rect x="38" y="20" width="14" height="10" rx="2" fill="#E3001B"/>
+        <line x1="68" y1="13" x2="68" y2="38" stroke="#555" stroke-width="1.5"/>
+        <path d="M65 38 Q65 43 68 43 Q71 43 71 38" fill="none" stroke="#555" stroke-width="2"/>
+        <rect x="36" y="68" width="18" height="4" rx="1" fill="#222"/>
+      </svg>
+      EIFFAGE <span>CHANTIER</span>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-notif" onclick="showToast('3 nouvelles notifications','info')"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg><div class="nbadge">3</div></div>
+      <div class="hdr-av" id="usr-av">EM</div>
+    </div>
+  </div>
+  <div class="tab-content">
+
+    <!-- ACCUEIL -->
+    <div class="tab-pane active" id="tp-accueil">
+      <div class="home-top"><div class="g-sub">Bonjour 👋</div><div class="g-name" id="g-name">Étienne Martin</div><div class="g-role-tag" id="g-role">Conducteur de travaux</div></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-card-title">Réserves à lever</div><div class="stat-big red" id="stat-res">4</div><div class="stat-sub">sur ce chantier</div></div>
+        <div class="stat-card"><div class="stat-card-title">Autocontrôles</div><div class="stat-big green" id="stat-ac-pct">67%</div><div class="stat-sub" id="stat-ac-sub">8 / 12 réalisés</div><div class="pmini"><div class="pmini-fill" id="ac-prog-fill" style="width:67%;background:var(--success)"></div></div></div>
+      </div>
+      <div class="sec-title">Autocontrôles à faire</div>
+      <div class="ac-notif-card"><div class="ac-notif-title">Autocontrôle — EES Électricité</div><div class="ac-notif-sub">Tableau T3B — Bât. A Niv.3 · Échéance aujourd'hui</div></div>
+      <div class="ac-notif-card"><div class="ac-notif-title">Autocontrôle — Nagla Peinture</div><div class="ac-notif-sub">Enduit niveau 2 — Bâtiment A · Échéance demain</div></div>
+      <div class="sec-title">Réserves à lever</div>
+      <div class="ri" onclick="switchTab('chat');openConv('reserves')"><div class="ri-dot"></div><div class="ri-c"><div class="ri-title">Court-circuit tableau T3B — EES</div><div class="ri-loc">Bâtiment A — Niveau 3</div></div><div class="ri-prio ph">URGENT</div></div>
+      <div class="ri med" onclick="switchTab('chat');openConv('reserves')"><div class="ri-dot"></div><div class="ri-c"><div class="ri-title">Fissure mur porteur — JR77</div><div class="ri-loc">Bâtiment B — R+2</div></div><div class="ri-prio pm">MOYEN</div></div>
+      <div class="ri low" onclick="switchTab('chat');openConv('reserves')"><div class="ri-dot"></div><div class="ri-c"><div class="ri-title">Finition peinture incomplète — Nagla</div><div class="ri-loc">Appartement A101</div></div><div class="ri-prio pl">FAIBLE</div></div>
+      <div class="ri low" onclick="switchTab('chat');openConv('reserves')"><div class="ri-dot"></div><div class="ri-c"><div class="ri-title">Joint manquant siphon — Nadalon</div><div class="ri-loc">Appartement B201</div></div><div class="ri-prio pl">FAIBLE</div></div>
+      <div class="sec-title">Tâches bloquées <button class="sec-add-btn" onclick="openAddBlockedModal()" title="Ajouter une tâche bloquée">+</button></div>
+      <div id="blocked-list-home">
+        <div class="blocked-item"><div class="bi-icon">🚫</div><div><div class="bi-title">Pose radiateur — Bâtiment B</div><div class="bi-reason">Manque 2ème couche peinture (Nagla)</div></div></div>
+        <div class="blocked-item"><div class="bi-icon">🚫</div><div><div class="bi-title">Menuiseries ext. — Pavillons 5 à 8</div><div class="bi-reason">Livraison retardée 3 jours (Menuiserie Bouille)</div></div></div>
+        <div class="blocked-item"><div class="bi-icon">🚫</div><div><div class="bi-title">Installation tableau T3B — Bât. A</div><div class="bi-reason">Réserve urgente à lever en priorité (EES)</div></div></div>
+      </div>
+      <div style="height:18px"></div>
+    </div>
+
+    <!-- CHAT -->
+    <div class="tab-pane" id="tp-chat">
+      <div class="chat-search-wrap"><input class="chat-srch-inp" type="text" placeholder="Rechercher un groupe..."></div>
+      <div>
+        <div class="cgi" onclick="openConv('reserves')"><div class="cav cav-red">🚨</div><div class="cgi-info"><div class="cgi-name">Réserves Chantier</div><div class="cgi-prev">Mehdi : Court-circuit tableau T3B détecté...</div></div><div class="cgi-meta"><div class="cgi-time">09:18</div><div class="cunread">3</div></div></div>
+        <div class="cgi" onclick="openConv('general')"><div class="cav cav-gray">📢</div><div class="cgi-info"><div class="cgi-name">Général — Tous intervenants</div><div class="cgi-prev">CT Martin : Réunion vendredi 14h, présence obligatoire</div></div><div class="cgi-meta"><div class="cgi-time">08:45</div><div class="cunread">7</div></div></div>
+        <div class="cgi" onclick="openConv('ees')"><div class="cav cav-blue">⚡</div><div class="cgi-info"><div class="cgi-name">EES — Électricité</div><div class="cgi-prev">Vous : Plans mis à jour reçus, merci</div></div><div class="cgi-meta"><div class="cgi-time">Hier</div></div></div>
+        <div class="cgi" onclick="openConv('nadalon')"><div class="cav cav-green">🔧</div><div class="cgi-info"><div class="cgi-name">Nadalon — Plomberie</div><div class="cgi-prev">Karim : Autocontrôle niveau 2 terminé ✅</div></div><div class="cgi-meta"><div class="cgi-time">Hier</div></div></div>
+        <div class="cgi" onclick="openConv('nagla')"><div class="cav cav-purple">🎨</div><div class="cgi-info"><div class="cgi-name">Nagla — Peinture</div><div class="cgi-prev">Piotr : Czy możemy zmienić termin?</div></div><div class="cgi-meta"><div class="cgi-time">Lun</div><div class="cunread">1</div></div></div>
+        <div class="cgi" onclick="openConv('jr77')"><div class="cav cav-orange">🧱</div><div class="cgi-info"><div class="cgi-name">JR77 — Maçonnerie</div><div class="cgi-prev">João : Travaux niveau 4 commencent demain</div></div><div class="cgi-meta"><div class="cgi-time">Lun</div></div></div>
+        <div class="cgi" onclick="openConv('idtp')"><div class="cav cav-teal">🚧</div><div class="cgi-info"><div class="cgi-name">IDTP — VRD</div><div class="cgi-prev">Ahmed : Terrassement zone C terminé</div></div><div class="cgi-meta"><div class="cgi-time">Lun</div></div></div>
+        <div class="cgi" onclick="openConv('bouille')"><div class="cav cav-teal">🚪</div><div class="cgi-info"><div class="cgi-name">Menuiserie Bouille</div><div class="cgi-prev">Livraison reportée de 3 jours</div></div><div class="cgi-meta"><div class="cgi-time">Ven</div></div></div>
+      </div>
+    </div>
+
+    <!-- TACHES -->
+    <div class="tab-pane" id="tp-taches">
+      <div class="tasks-subtabs">
+        <div class="tst active" id="st-lps" onclick="switchSub('lps')">Planning LPS</div>
+        <div class="tst" id="st-prog" onclick="switchSub('prog')">Progression</div>
+        <div class="tst" id="st-fiches" onclick="switchSub('fiches')">Fiches tâches</div>
+        <div class="tst" id="st-ac" onclick="switchSub('ac')">Autocontrôles</div>
+      </div>
+
+      <!-- LPS -->
+      <div id="sc-lps">
+        <div class="lps-hdr-row"><div class="lps-week-lbl">Semaine 23 — Juin 2025</div><div class="lps-nav-btns"><button class="lps-nav-btn"><svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button><button class="lps-nav-btn"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div></div>
+        <div class="lps-table-wrap"><table class="lps-tbl" id="lps-tbl"></table></div>
+        <div class="prom-wrap" id="prom-wrap"></div>
+        <div style="height:12px"></div>
+      </div>
+
+      <!-- PROGRESSION -->
+      <div id="sc-prog" style="display:none">
+        <div class="prog-hdr-row"><div class="prog-hdr-title">Tableau de progression</div></div>
+        <div class="prog-legend">
+          <div class="prog-leg-item"><div class="prog-leg-dot" style="background:rgba(22,163,74,.3)"></div>≥ 80%</div>
+          <div class="prog-leg-item"><div class="prog-leg-dot" style="background:rgba(217,119,6,.3)"></div>30–79%</div>
+          <div class="prog-leg-item"><div class="prog-leg-dot" style="background:rgba(220,38,38,.2)"></div>&lt; 30%</div>
+        </div>
+        <div class="prog-wrap"><table class="prog-table" id="prog-table"></table></div>
+      </div>
+
+      <!-- FICHES -->
+      <div id="sc-fiches" style="display:none">
+        <div id="fiche-co-sel">
+          <div class="co-sel-wrap">
+            <div class="co-sel-title">Sélectionner une entreprise</div>
+            <button class="co-btn" onclick="openFicheCompany('nadalon','Nadalon — Plomberie','#2563eb')"><div class="co-dot" style="background:#2563eb"></div><div><div class="co-btn-name">Nadalon</div><div class="co-btn-lot">Plomberie</div></div><div class="co-arrow">›</div></button>
+            <button class="co-btn" onclick="openFicheCompany('ees','EES — Électricité','#16a34a')"><div class="co-dot" style="background:#16a34a"></div><div><div class="co-btn-name">EES</div><div class="co-btn-lot">Électricité</div></div><div class="co-arrow">›</div></button>
+            <button class="co-btn" onclick="openFicheCompany('nagla','Nagla — Peinture','#7c3aed')"><div class="co-dot" style="background:#7c3aed"></div><div><div class="co-btn-name">Nagla</div><div class="co-btn-lot">Peinture</div></div><div class="co-arrow">›</div></button>
+            <button class="co-btn" onclick="openFicheCompany('jr77','JR77 — Maçonnerie','#d97706')"><div class="co-dot" style="background:#d97706"></div><div><div class="co-btn-name">JR77</div><div class="co-btn-lot">Maçonnerie</div></div><div class="co-arrow">›</div></button>
+            <button class="co-btn" onclick="openFicheCompany('idtp','IDTP — VRD','#dc2626')"><div class="co-dot" style="background:#dc2626"></div><div><div class="co-btn-name">IDTP</div><div class="co-btn-lot">VRD</div></div><div class="co-arrow">›</div></button>
+            <button class="co-btn" onclick="openFicheCompany('bouille','Menuiserie Bouille','#0f766e')"><div class="co-dot" style="background:#0f766e"></div><div><div class="co-btn-name">Menuiserie Bouille</div><div class="co-btn-lot">Menuiserie Intérieure</div></div><div class="co-arrow">›</div></button>
+          </div>
+        </div>
+        <div id="fiche-task-list" style="display:none">
+          <div class="fc-hdr"><div class="fc-bck" onclick="backCo()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div><div class="fc-title" id="fiche-co-title">Nadalon</div><button class="fc-add" onclick="showAddTaskModal()">+ Tâche</button></div>
+          <div id="fiche-cards" style="padding-top:7px"></div>
+        </div>
+      </div>
+
+      <!-- AUTOCONTROLES -->
+      <div id="sc-ac" style="display:none">
+        <div id="ac-step1">
+          <div class="co-sel-wrap">
+            <div class="co-sel-title">Sélectionner une entreprise</div>
+            <button class="co-btn" onclick="openAcCompany('nagla','Nagla — Peinture','#7c3aed')"><div class="co-dot" style="background:#7c3aed"></div><div><div class="co-btn-name">Nagla</div><div class="co-btn-lot">Peinture</div></div><div class="co-arrow">›</div></button>
+            <button class="co-btn" onclick="openAcCompany('nadalon','Nadalon — Plomberie','#2563eb')"><div class="co-dot" style="background:#2563eb"></div><div><div class="co-btn-name">Nadalon</div><div class="co-btn-lot">Plomberie</div></div><div class="co-arrow">›</div></button>
+            <button class="co-btn" onclick="openAcCompany('ees','EES — Électricité','#16a34a')"><div class="co-dot" style="background:#16a34a"></div><div><div class="co-btn-name">EES</div><div class="co-btn-lot">Électricité</div></div><div class="co-arrow">›</div></button>
+            <button class="co-btn" onclick="openAcCompany('jr77','JR77 — Maçonnerie','#d97706')"><div class="co-dot" style="background:#d97706"></div><div><div class="co-btn-name">JR77</div><div class="co-btn-lot">Maçonnerie</div></div><div class="co-arrow">›</div></button>
+            <button class="co-btn" onclick="openAcCompany('idtp','IDTP — VRD','#dc2626')"><div class="co-dot" style="background:#dc2626"></div><div><div class="co-btn-name">IDTP</div><div class="co-btn-lot">VRD</div></div><div class="co-arrow">›</div></button>
+          </div>
+        </div>
+        <div id="ac-step2" style="display:none">
+          <div class="fc-hdr"><div class="fc-bck" onclick="backAcStep1()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div><div class="fc-title" id="ac-co-title">Nagla — Peinture</div></div>
+          <div id="ac-apt-list" style="padding:8px 16px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOCUMENTS -->
+    <div class="tab-pane" id="tp-docs">
+      <!-- Vue dossiers -->
+      <div id="docs-folders-view">
+        <div style="padding:8px 16px"><button class="doc-upload-btn" onclick="showToast('Fonctionnalité upload disponible','info')"><svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>Importer un document</button></div>
+        <div id="docs-folders-list"></div>
+      </div>
+      <!-- Vue documents d'un dossier -->
+      <div id="docs-files-view" style="display:none">
+        <div class="docs-folder-hdr">
+          <div class="bck" onclick="backToFolders()"><svg viewBox="0 0 24 24" fill="var(--red)" width="18" height="18"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div>
+          <div class="docs-folder-hdr-name" id="docs-folder-name">Dossier</div>
+        </div>
+        <div class="docs-search-wrap"><input class="docs-srch-inp" type="text" placeholder="Rechercher dans ce dossier..."></div>
+        <div id="docs-files-list" style="padding:8px 16px"></div>
+      </div>
+    </div>
+
+    <!-- ASSISTANT IA -->
+    <div class="tab-pane" id="tp-ai">
+      <div class="ai-hdr-wrap">
+        <div class="ai-hdr-top">
+          <div class="ai-avatar">🤖</div>
+          <div><div class="ai-hdr-name">Assistant Chantier</div><div class="ai-hdr-sub">Eiffage Chantier IA · LABACHOTTE</div></div>
+          <div class="ai-online" style="margin-left:auto"><div class="ai-online-dot"></div>En ligne</div>
+        </div>
+        <div class="ai-chips-wrap">
+          <div class="ai-chip" onclick="askChip(this)">Réserves urgentes ?</div>
+          <div class="ai-chip" onclick="askChip(this)">Qui est en retard ?</div>
+          <div class="ai-chip" onclick="askChip(this)">Résumé du chantier</div>
+          <div class="ai-chip" onclick="askChip(this)">Meilleures promesses ?</div>
+          <div class="ai-chip" onclick="askChip(this)">Prochains autocontrôles</div>
+        </div>
+      </div>
+      <div class="ai-msgs" id="ai-msgs">
+        <div class="ai-msg bot"><div class="ai-bubble">Bonjour ! Je suis votre assistant chantier pour le projet <strong>LABACHOTTE</strong>. Je connais vos réserves, votre planning LPS, vos autocontrôles et les performances de vos entreprises. Comment puis-je vous aider ?</div><div class="ai-msg-time">09:41</div></div>
+      </div>
+      <div class="ai-inp-bar"><input class="ai-inp" id="ai-inp" type="text" placeholder="Posez une question sur le chantier..."><button class="ai-send" id="ai-send-btn" onclick="sendAiMsg()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bnav">
+    <div class="ni active" id="ni-accueil" onclick="switchTab('accueil')"><div class="ni-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div><span class="ni-lbl">Accueil</span></div>
+    <div class="ni" id="ni-chat" onclick="switchTab('chat')"><div class="ni-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div><span class="ni-lbl">Chat</span><div class="ni-badge">5</div></div>
+    <div class="ni" id="ni-taches" onclick="switchTab('taches')"><div class="ni-icon"><svg viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></div><span class="ni-lbl">Tâches</span></div>
+    <div class="ni" id="ni-docs" onclick="switchTab('docs')"><div class="ni-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h7.17l2 2H20v8z"/></svg></div><span class="ni-lbl">Docs</span></div>
+    <div class="ni" id="ni-ai" onclick="switchTab('ai')"><div class="ni-icon"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></div><span class="ni-lbl">Assistant</span></div>
+  </div>
+
+  <div class="toast" id="toast"><svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg><span id="toast-msg">OK</span></div>
+</div>
+
+<!-- CONV -->
+<div class="screen" id="scr-conv">
+  <div class="conv-hdr"><div class="bck" onclick="closeConv()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div><div style="flex:1"><div class="conv-name" id="conv-nm">Réserves</div><div class="conv-members" id="conv-mb">12 membres</div></div></div>
+  <div class="chat-msgs" id="chat-msgs"></div>
+  <div class="chat-inp-bar"><div class="chat-att" onclick="openReserveForm()"><svg viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg></div><input class="chat-inp" id="chat-inp" type="text" placeholder="Message..."><button class="chat-send" onclick="sendMsg()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button></div>
+</div>
+
+<!-- RESERVE FORM -->
+<div class="screen" id="scr-reserve">
+  <div class="form-hdr"><div class="bck" onclick="closeReserveForm()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div><div class="form-hdr-title">Signaler une réserve</div></div>
+  <div class="form-body">
+    <label class="flbl">Photo *</label>
+    <div class="photo-zone" id="pz" onclick="simPhoto()"><svg viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg><div class="photo-zone-txt">Prendre une photo</div></div>
+    <div class="photo-prev" id="pp">🔌<div class="photo-prev-ov"><span class="photo-prev-lbl">Reserve_001.jpg</span><span class="photo-prev-chg" onclick="simPhoto()">Changer</span></div></div>
+    <label class="flbl">Zone *</label>
+    <select class="fselect" id="r-zone">
+      <option value="">— Sélectionner —</option>
+      <optgroup label="Bâtiment A"><option>A001</option><option>A002</option><option>A101</option><option>A102</option><option>A103</option><option>A201</option><option>A202</option><option>A203</option></optgroup>
+      <optgroup label="Bâtiment B"><option>B001</option><option>B002</option><option>B101</option><option>B102</option><option>B201</option><option>B202</option></optgroup>
+      <optgroup label="Bâtiment C"><option>C001</option><option>C002</option><option>C101</option><option>C102</option><option>C201</option><option>C202</option></optgroup>
+      <optgroup label="Bâtiment D"><option>D001</option><option>D002</option><option>D101</option><option>D102</option><option>D201</option><option>D202</option></optgroup>
+      <optgroup label="Pavillons"><option>Pavillon 1</option><option>Pavillon 2</option><option>Pavillon 3</option><option>Pavillon 4</option><option>Pavillon 5</option><option>Pavillon 6</option><option>Pavillon 7</option><option>Pavillon 8</option><option>Pavillon 9</option><option>Pavillon 10</option><option>Pavillon 11</option><option>Pavillon 12</option><option>Pavillon 13</option><option>Pavillon 14</option></optgroup>
+    </select>
+    <input class="finput" id="r-detail" type="text" placeholder="Précision (couloir, salle de bain...)">
+    <label class="flbl">Description</label>
+    <input class="finput" id="r-desc" type="text" placeholder="Décrivez le problème...">
+    <label class="flbl">Priorité *</label>
+    <div class="prio-grid"><button class="prio-btn low" onclick="selPrio('low',this)">Faible</button><button class="prio-btn med" onclick="selPrio('med',this)">Moyen</button><button class="prio-btn high sel" onclick="selPrio('high',this)">Urgent</button></div>
+    <button class="submit-btn" onclick="submitReserve()">Envoyer la réserve →</button>
+  </div>
+</div>
+
+<!-- TASK DETAIL -->
+<div class="screen" id="scr-td">
+  <div class="det-hdr"><div class="bck" onclick="closeTd()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div><div class="det-bc">Tâches › Fiche tâche</div></div>
+  <div class="det-body" id="det-body"></div>
+</div>
+
+<!-- AC DETAIL -->
+<div class="screen" id="scr-ac-detail">
+  <div class="gen-hdr"><div class="bck" onclick="closeAcDetail()"><svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></div><div style="flex:1"><div class="conv-name" id="ac-det-title">A101</div><div class="conv-members" id="ac-det-sub">Peinture</div></div></div>
+  <div style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;" id="ac-det-body"></div>
+</div>
+
+<!-- LPS ADD MODAL -->
+<div class="lps-mo" id="lps-mo">
+  <div class="lps-mo-box"><div class="lps-mo-title" id="lps-mo-title">Ajouter une tâche</div><div id="lps-mo-tasks"></div><button class="lps-mo-close" onclick="closeLpsMo()">Annuler</button></div>
+</div>
+
+<!-- LPS ACTION MODAL (long press) -->
+<div class="lps-action-mo" id="lps-action-mo">
+  <div class="lps-action-box">
+    <div class="lps-action-title" id="lps-action-title">Action sur la tâche</div>
+    <button class="lps-action-btn btn-done" onclick="setChipStatus('done')">✅ Marquer comme Faite</button>
+    <button class="lps-action-btn btn-notdone" onclick="setChipStatus('notdone')">⬜ Marquer comme Non réalisée</button>
+    <button class="lps-action-btn btn-cancel" onclick="closeLpsAction()">Annuler</button>
+  </div>
+</div>
+
+<!-- ADD BLOCKED MODAL -->
+<div class="add-task-mo" id="add-blocked-mo">
+  <div class="add-task-box">
+    <div class="add-task-title">Ajouter une tâche bloquée</div>
+    <input class="finput" id="new-blocked-title" type="text" placeholder="Nom de la tâche bloquée">
+    <input class="finput" id="new-blocked-reason" type="text" placeholder="Raison du blocage...">
+    <button class="submit-btn" onclick="submitBlockedTask()">Ajouter</button>
+    <button style="width:100%;background:var(--g100);border:none;border-radius:var(--rsm);padding:11px;font-family:var(--font);font-size:13px;color:var(--g600);cursor:pointer;margin-top:6px" onclick="closeAddBlockedModal()">Annuler</button>
+  </div>
+</div>
+
+<!-- ADD FICHE TASK MODAL -->
+<div class="add-task-mo" id="add-fiche-mo">
+  <div class="add-task-box">
+    <div class="add-task-title">Nouvelle tâche</div>
+    <input class="finput" id="new-task-title" type="text" placeholder="Nom de la tâche">
+    <input class="finput" id="new-task-loc" type="text" placeholder="Localisation (ex : Bât. A — Niveau 2)">
+    <button class="submit-btn" onclick="submitNewTask()">Ajouter</button>
+    <button style="width:100%;background:var(--g100);border:none;border-radius:var(--rsm);padding:11px;font-family:var(--font);font-size:13px;color:var(--g600);cursor:pointer;margin-top:6px" onclick="el('add-fiche-mo').classList.remove('show')">Annuler</button>
+  </div>
+</div>
+
+<!-- PROG % MODAL -->
+<div class="prog-mo" id="prog-mo">
+  <div class="prog-mo-box">
+    <div class="prog-mo-title" id="prog-mo-title">Saisir un pourcentage</div>
+    <div class="prog-mo-sub" id="prog-mo-sub"></div>
+    <div class="prog-mo-slider-row">
+      <input type="range" class="prog-mo-slider" id="prog-mo-slider" min="0" max="100" step="5" value="0" oninput="progSliderChange(this.value)">
+      <div class="prog-mo-val" id="prog-mo-val">0%</div>
+    </div>
+    <div class="prog-mo-btns">
+      <button class="prog-mo-cancel" onclick="closeProgModal()">Annuler</button>
+      <button class="prog-mo-save" onclick="saveProgVal()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEPENDENCY ALERT MODAL -->
+<div class="dep-alert-mo" id="dep-alert-mo">
+  <div class="dep-alert-box">
+    <div class="dep-alert-icon">⚠️</div>
+    <div class="dep-alert-title">Alerte de dépendance</div>
+    <div class="dep-alert-msg" id="dep-alert-msg"></div>
+    <button class="dep-alert-ok" onclick="closeDepAlert()">Compris</button>
+  </div>
+</div>
+
+<script>
+// ─── CONTEXT FOR AI ───
+const CHANTIER_CONTEXT = `Tu es l'assistant intelligent intégré à l'application Eiffage Chantier pour le projet LABACHOTTE à Sens (89).
+Voici les données actuelles du chantier :
+
+RÉSERVES EN COURS :
+- Court-circuit tableau T3B — EES Électricité — Bât. A Niveau 3 — URGENT
+- Fissure mur porteur — JR77 Maçonnerie — Bât. B R+2 — MOYEN
+- Finition peinture incomplète — Nagla Peinture — Appartement A101 — FAIBLE
+- Joint manquant siphon douche — Nadalon Plomberie — Appartement B201 — FAIBLE
+
+TÂCHES BLOQUÉES :
+- Pose radiateur Bâtiment B : bloquée car manque 2ème couche de peinture (Nagla)
+- Menuiseries ext. Pavillons 5-8 : bloquée, livraison retardée 3 jours (Menuiserie Bouille)
+- Installation tableau T3B Bât. A : bloquée, réserve urgente à lever (EES)
+
+AUTOCONTRÔLES (% réalisés) :
+- EES Électricité : 33% (1/3 vérifications)
+- Nadalon Plomberie : 100% (3/3 vérifications)
+- Nagla Peinture : 33% (1/3 vérifications)
+- JR77 Maçonnerie : 0% (0/2 vérifications)
+
+PROMESSES TENUES (tâches faites / prévues) :
+- Nadalon : 80% (8/10)
+- EES : 63% (5/8)
+- Nagla : 57% (4/7)
+- JR77 : 67% (6/9)
+- IDTP : 75% (3/4)
+- Menuiserie Bouille : 40% (2/5)
+
+ZONES DU CHANTIER :
+Bâtiments A (A001-A203), B (B001-B202), C (C001-C202), D (D001-D202), Pavillons 1 à 14.
+
+Réponds en français, de façon concise et professionnelle. Si la question porte sur des données du chantier, base-toi sur ces données. Si c'est une question générale BTP, réponds avec ton expertise.`;
+
+// ─── STATE ───
+let curConvId=null, curPrio='high', photoTaken=false, curLpsCell=null, curLpsChip=null, curAcCo=null, curFicheCo=null;
+
+// ─── FICHES DATA ───
+const fichesData={
+  nadalon:{color:'#2563eb',chip:'cp',tasks:[
+    {id:'nd1',title:'Pose radiateur — Bâtiment B',status:'blocked',loc:'Bât. B — tous niveaux',instr:'Poser et raccorder les radiateurs selon le schéma hydraulique.\nATTENTION : tâche bloquée, attendre la 2e couche de peinture Bât B.',blocked:[{t:'2ème couche peinture Bât B',r:'Nagla doit terminer avant intervention'}],docs:['Schéma hydraulique.pdf']},
+    {id:'nd2',title:'Pose receveur douche — A101',status:'done',loc:'Appartement A101',instr:'Poser les receveurs de douche et effectuer les raccordements EU.',blocked:[],docs:['Plan plomberie A1.pdf']},
+    {id:'nd3',title:'Colonne EU — Niveaux 3-4',status:'progress',loc:'Cage escalier Bât. A',instr:'Pose et raccordement colonne eaux usées niveaux 3 et 4. Pente min 1%.',blocked:[],docs:['Plan EU niv3-4.pdf']},
+    {id:'nd4',title:'Raccordement sanitaires — A201',status:'todo',loc:'Appartement A201',instr:'Raccorder tous appareils sanitaires. Test pression 6 bar obligatoire.',blocked:[],docs:[]},
+  ]},
+  ees:{color:'#16a34a',chip:'ce',tasks:[
+    {id:'ee1',title:'Installation tableau T3B',status:'blocked',loc:'Bât. A — Niveau 3, Zone B',instr:'Installer et raccorder le tableau T3B. Vérifier conformité NF C 15-100.\nRéserve urgente signalée — diagnostiquer avant toute intervention.',blocked:[{t:'Court-circuit tableau T3B',r:'Réserve urgente à lever en premier'}],docs:['Plan élec. T3B.pdf','NF C 15-100.pdf']},
+    {id:'ee2',title:'Tableau T2A — Bâtiment A',status:'done',loc:'Bât. A — Niveau 2',instr:'Installation terminée. Plans à jour sur le serveur.',blocked:[],docs:['Plan élec. T2A.pdf']},
+    {id:'ee3',title:'Tableau T4A — Bâtiment A',status:'todo',loc:'Bât. A — Niveau 4',instr:'Installer T4A selon même schéma que T2A.',blocked:[],docs:['Plan élec. T4A.pdf']},
+  ]},
+  nagla:{color:'#7c3aed',chip:'cn',tasks:[
+    {id:'ng1',title:'Primaire & Enduit — Niv.1 Bât A',status:'progress',loc:'Bât. A — Niv.1',instr:'Application primaire puis enduit. Respecter 24h de séchage.',blocked:[],docs:['Fiche teinte.pdf']},
+    {id:'ng2',title:'2ème couche — Bâtiment B',status:'progress',loc:'Bât. B — tous niveaux',instr:'Appliquer 2ème couche. PRIORITAIRE — débloque pose radiateurs.',blocked:[],docs:['Fiche teinte Bât B.pdf']},
+    {id:'ng3',title:'Finitions — Appartement A101',status:'blocked',loc:'Appartement A101',instr:'Reprendre finitions signalées en réserve.',blocked:[{t:'Réserve finition A101',r:'À lever avant réception'}],docs:[]},
+  ]},
+  jr77:{color:'#d97706',chip:'cm',tasks:[
+    {id:'jr1',title:'Murs R+3 — Axe C',status:'todo',loc:'R+3 — Axe C',instr:'Montage murs séparation. Blocs béton 20x20x50. Vérifier modif. trame 4.',blocked:[],docs:['Plan exéc. R+3.pdf']},
+    {id:'jr2',title:'Murs R+2 — Axe B',status:'done',loc:'R+2 — Axe B',instr:'Travaux terminés. Contrôle qualité effectué.',blocked:[],docs:[]},
+    {id:'jr3',title:'Fissure mur porteur — Bât B',status:'blocked',loc:'Bât. B — R+2',instr:'Diagnostiquer et reprendre la fissure constatée.',blocked:[{t:'Réserve fissure mur porteur',r:'Expertise en attente'}],docs:['Rapport fissure.pdf']},
+  ]},
+  idtp:{color:'#dc2626',chip:'cv',tasks:[
+    {id:'id1',title:'Terrassement zone C',status:'done',loc:'Zone extérieure C',instr:'Terrassement terminé.',blocked:[],docs:[]},
+    {id:'id2',title:'Réseaux EU/EP extérieurs',status:'progress',loc:'Zones A-B-C extérieures',instr:'Pose réseaux eaux usées et eaux pluviales extérieures.',blocked:[],docs:['Plan VRD.pdf']},
+  ]},
+  bouille:{color:'#0f766e',chip:'cme',tasks:[
+    {id:'bo1',title:'Menuiseries ext. Pavillons 1-4',status:'done',loc:'Pavillons 1 à 4',instr:'Pose terminée.',blocked:[],docs:[]},
+    {id:'bo2',title:'Menuiseries ext. Pavillons 5-8',status:'blocked',loc:'Pavillons 5 à 8',instr:'En attente de livraison. Report de 3 jours.',blocked:[{t:'Livraison retardée',r:'Report 3 jours — fournisseur'}],docs:[]},
+    {id:'bo3',title:'Menuiseries int. Bâtiment A',status:'todo',loc:'Bât. A — tous appartements',instr:'Pose portes intérieures et huisseries.',blocked:[],docs:['Plan menuiserie Bât A.pdf']},
+  ]},
+};
+
+// ─── LPS ───
+const zones=['A001','A002','A101','A102','A103','A201','A202','A203','B001','B002','B101','B102','B201','B202','C101','C102','D101','D102','Pav.1','Pav.2','Pav.3','Pav.4','Pav.5','Pav.6'];
+const days=['Lun 02','Mar 03','Mer 04 ●','Jeu 05','Ven 06'];
+const lpsGrid={
+  'A101':{'Lun 02':[{l:'Peinture prim.',c:'cn',st:'done'},{l:'Plomberie EU',c:'cp',st:''}]},
+  'A102':{'Lun 02':[{l:'Maçonnerie',c:'cm',st:'done'}],'Mar 03':[{l:'Électricité T2',c:'ce',st:'done'}]},
+  'B101':{'Mer 04 ●':[{l:'Peinture 2e cch',c:'cn',st:''},{l:'Radiateurs',c:'cp cblocked',st:'notdone'}]},
+  'B102':{'Mer 04 ●':[{l:'Peinture 2e cch',c:'cn',st:''}]},
+  'C101':{'Jeu 05':[{l:'VRD réseaux',c:'cv',st:''}]},
+  'Pav.1':{'Lun 02':[{l:'Menuiseries',c:'cme',st:'done'}]},
+  'Pav.2':{'Lun 02':[{l:'Menuiseries',c:'cme',st:'done'}]},
+  'Pav.5':{'Jeu 05':[{l:'Menuiseries',c:'cme cblocked',st:'notdone'}]},
+  'A103':{'Ven 06':[{l:'Électricité T4',c:'ce',st:''}]},
+  'A201':{'Mar 03':[{l:'Sanitaires',c:'cp',st:''}]},
+};
+const promesses={Nadalon:{done:8,total:10,color:'#2563eb'},EES:{done:5,total:8,color:'#16a34a'},Nagla:{done:4,total:7,color:'#7c3aed'},JR77:{done:6,total:9,color:'#d97706'},IDTP:{done:3,total:4,color:'#dc2626'},Bouille:{done:2,total:5,color:'#0f766e'}};
+
+// ─── AUTOCONTROLES DATA ───
+const acChecks={
+  nagla:[
+    {section:'Avant réalisation',items:['Supports propres, secs, lisses, prêts à peindre','Peintures conformes aux spécifications (lavable, lessivable)']},
+    {section:'Pendant la réalisation',items:['Nombre de couches respecté, peinture uniforme sans défaut','Zones adjacentes propres et protégées']},
+    {section:'Après la réalisation',items:['Peinture sans défauts (traces de rouleau, poils, coulures)','Ouvrages protégés jusqu\'à la livraison']},
+  ],
+  nadalon:[
+    {section:'Avant réalisation',items:['Plans à jour, cohérents avec les prescriptions','Matériaux certifiés conformes aux spécifications (type, diamètre)']},
+    {section:'Pendant la réalisation',items:['Canalisations protégées, cheminement respectant les distances','Raccords propres et conformes, fixations solides','Pentes conformes pour écoulement gravitaire efficace']},
+    {section:'Après la réalisation',items:['Absence de fuite après essais de mise en pression/eau','Appareils sanitaires et robinetterie fonctionnels, sans fuite']},
+  ],
+  ees:[
+    {section:'Avant réalisation',items:['Plans à jour et cohérents avec CCTP et réglementation','Matériaux certifiés NF, conformes aux spécifications et au DOE']},
+    {section:'Pendant la réalisation',items:['Câbles protégés, cheminement respectant les zones techniques','Raccordements propres, serrage conforme, continuité conducteurs','Mise à la terre conforme, connexions équipotentielles réalisées']},
+    {section:'Après la réalisation',items:['Mesures conformes aux seuils réglementaires (PV de mesures)','Tous circuits et équipements fonctionnels et conformes aux usages','Tableaux électriques correctement repérés, schémas à jour']},
+  ],
+  jr77:[
+    {section:'Avant réalisation',items:['Plans conformes aux autorisations et exigences du projet','Fond de fouille stable, purgé de matériaux impropres']},
+    {section:'Pendant la réalisation',items:['Pentes régulières, alignement respecté pour bon écoulement','Lit de pose correct, remblai compacté par couches successives']},
+    {section:'Après la réalisation',items:['Absence de fuite, continuité des réseaux secs','Compacité suffisante pour éviter les tassements ultérieurs']},
+  ],
+  idtp:[
+    {section:'Avant réalisation',items:['Plans conformes aux autorisations et raccordements','Matériaux certifiés, conformes aux classes de résistance']},
+    {section:'Pendant la réalisation',items:['Raccordements propres, étanches, sans risque de fuite','Éléments de surface correctement positionnés et scellés']},
+    {section:'Après la réalisation',items:['Fonctionnalité des réseaux et accès aux regards','Compacité des tranchées remblayées']},
+  ],
+};
+// Track state per apartment: {coId: {aptKey: {sectionIdx_itemIdx: bool}}}
+const acState={};
+const apartments={
+  batA:['A001','A002','A101','A102','A103','A201','A202','A203'],
+  batB:['B001','B002','B101','B102','B201','B202'],
+  batC:['C001','C002','C101','C102','C201','C202'],
+  batD:['D001','D002','D101','D102','D201','D202'],
+  pavillons:['Pavillon 1','Pavillon 2','Pavillon 3','Pavillon 4','Pavillon 5','Pavillon 6','Pavillon 7','Pavillon 8','Pavillon 9','Pavillon 10','Pavillon 11','Pavillon 12','Pavillon 13','Pavillon 14'],
+};
+
+// ─── PROGRESSION DATA ───
+// Structure : ent = entreprise (affiché une fois), lot = section, subs = tâches uniquement
+const progData=[
+  {ent:'JR77',lot:'ISOLATIONS + CHAPE',subs:[
+    {name:'Placo TM8',vals:{A001:null,A002:null,A101:null,A102:null,A103:null,A201:null,A202:null,B001:null,B002:null,B101:null,B102:null}},
+  ]},
+  {ent:'NAGLA',lot:'PRÉPARATION',subs:[
+    {name:'Protéger portes et fenêtres',vals:{A001:null,A002:null,A101:null,A102:null,B001:null,B002:null}},
+  ]},
+  {ent:'NAGLA',lot:'ENDUIT',subs:[
+    {name:'Enduits',vals:{A001:null,A002:null,A101:null,A102:null,A103:null}},
+  ]},
+  {ent:'NAGLA',lot:'IMPRESSION 1 COUCHE',subs:[
+    {name:'Impression',vals:{A001:null,A002:null,A101:null,A102:null,A103:null}},
+  ]},
+  {ent:'NADALON',lot:'POSE BAIGNOIRE',subs:[
+    {name:'Pose baignoire',vals:{A001:null,A002:null,A101:null,A102:null,A103:null}},
+  ]},
+  {ent:'NADALON',lot:'POSE RECEVEUR',subs:[
+    {name:'Pose receveur',vals:{A001:null,A002:null,A101:null,A102:null,A103:null,A201:null}},
+  ]},
+  {ent:'EES',lot:'TABLEAU ÉLECTRIQUE',subs:[
+    {name:'Tableau électrique',vals:{A001:0,A002:50,A101:60,A102:60,A103:60,A201:60,A202:60,A203:60,B001:null,B002:null,B101:null,B102:null}},
+  ]},
+  {ent:'NADALON',lot:'POSE RADIATEUR',subs:[
+    {name:'Pose radiateur',vals:{A001:90,A002:30,A101:30,A102:50,A103:50,A201:30,A202:30,A203:30,B001:70,B002:70,B101:70,B102:70}},
+  ]},
+  {ent:'NAGLA',lot:'2ND COUCHES PEINTURE',subs:[
+    {name:'2ndes couches peinture',vals:{A001:30,A002:30,A101:30,A102:50,A103:90,A201:30,A202:30,A203:30}},
+  ]},
+];
+const progCols=['A001','A002','A101','A102','A103','A201','A202','A203','B001','B002','B101','B102'];
+
+// ─── MSGS ───
+const msgs={
+  reserves:[
+    {mine:false,sender:'Mehdi B. (EES)',text:'السلك الأحمر مقطوع، يجب الإصلاح فوراً.',translated:'Le fil rouge est coupé, il faut réparer immédiatement.',langTag:'AR→FR',time:'09:12',photo:true,photoLabel:'Tableau_T3B.jpg'},
+    {mine:true,sender:'CT Martin',text:'Reçu. Priorité haute.',time:'09:20'},
+    {mine:false,sender:'Mehdi B.',text:'2 heures avec le matériel en stock.',time:'09:22'},
+  ],
+  general:[
+    {mine:false,sender:'CT Martin',text:'Réunion vendredi 14h salle B. Présence obligatoire.',time:'08:45'},
+    {mine:false,sender:'João S. (JR77)',text:'Trabalhos do nível 4 começam amanhã às 7h.',translated:'Les travaux du niveau 4 commencent demain à 7h.',langTag:'PT→FR',time:'08:50'},
+    {mine:false,sender:'Piotr W. (Nagla)',text:'Potwierdzam obecność.',translated:'Je confirme ma présence.',langTag:'PL→FR',time:'09:01'},
+  ],
+  ees:[{mine:false,sender:'Mehdi B.',text:'Plans T2A disponibles sur serveur.',time:'Hier 14:20'},{mine:true,sender:'CT Martin',text:'Plans reçus, merci.',time:'Hier 15:10'}],
+  nadalon:[{mine:false,sender:'Karim D.',text:'Autocontrôle niveau 2 terminé ✅',time:'Hier 11:30'},{mine:true,sender:'CT Martin',text:'Parfait. On passe au niveau 3 demain.',time:'Hier 11:45'}],
+  nagla:[{mine:false,sender:'Piotr W.',text:'Czy możemy zmienić termin na piątek?',translated:'Pouvons-nous décaler le début à vendredi ?',langTag:'PL→FR',time:'Lun 09:15'},{mine:true,sender:'CT Martin',text:'Non, planning maintenu.',time:'Lun 10:00'}],
+  jr77:[{mine:false,sender:'João S.',text:'Trabalhos do nível 4 começam amanhã.',translated:'Les travaux du niveau 4 commencent demain.',langTag:'PT→FR',time:'Lun 16:00'}],
+  idtp:[{mine:false,sender:'Ahmed K.',text:'Terrassement zone C terminé.',time:'Lun 14:00'},{mine:true,sender:'CT Martin',text:'Bien reçu.',time:'Lun 14:30'}],
+  bouille:[{mine:false,sender:'M. Bouille',text:'Livraison pavillons 5-8 reportée 3 jours.',time:'Ven 10:00'}],
+};
+const convInfo={
+  reserves:{name:'Réserves Chantier',members:'12 membres · 3 non lus'},
+  general:{name:'Général — Tous intervenants',members:'28 membres · 7 non lus'},
+  ees:{name:'EES — Électricité',members:'4 membres'},
+  nadalon:{name:'Nadalon — Plomberie',members:'3 membres'},
+  nagla:{name:'Nagla — Peinture',members:'3 membres · 1 non lu'},
+  jr77:{name:'JR77 — Maçonnerie',members:'5 membres'},
+  idtp:{name:'IDTP — VRD',members:'3 membres'},
+  bouille:{name:'Menuiserie Bouille',members:'2 membres'},
+};
+
+// ─── DOCS DATA ───
+const docsData=[
+  {cat:'Plans Architecturaux',icon:'📐',docs:[
+    {name:'Plan masse — LABACHOTTE',type:'pdf',meta:'Mis à jour il y a 3 jours',badge:''},
+    {name:'Plans de niveaux — Bâtiment A',type:'pdf',meta:'Version 3 · 12 pages',badge:''},
+    {name:'Plans de niveaux — Bâtiment B',type:'pdf',meta:'Version 2 · 10 pages',badge:'NEW'},
+    {name:'Plans pavillons 1 à 14',type:'dwg',meta:'AutoCAD 2024',badge:''},
+  ]},
+  {cat:'Plans Techniques',icon:'⚙️',docs:[
+    {name:'Plan plomberie — Tous bâtiments',type:'pdf',meta:'Lot Nadalon',badge:''},
+    {name:'Plan électricité — Bâtiment A',type:'pdf',meta:'Lot EES · Version 4',badge:'NEW'},
+    {name:'Plan VRD extérieurs',type:'dwg',meta:'Lot IDTP',badge:''},
+    {name:'Plan menuiseries extérieures',type:'pdf',meta:'Lot Menuiserie Bouille',badge:''},
+  ]},
+  {cat:'Documents Administratifs',icon:'📋',docs:[
+    {name:'CCTP — Corps d\'état',type:'pdf',meta:'LABACHOTTE 2024',badge:''},
+    {name:'Planning général prévisionnel',type:'xls',meta:'Mis à jour 15/05/2025',badge:''},
+    {name:'Compte-rendu réunion S22',type:'pdf',meta:'28/05/2025',badge:'NEW'},
+    {name:'PV de réception partielle',type:'pdf',meta:'Zones A001-A103',badge:''},
+  ]},
+  {cat:'Fiches d\'autocontrôle',icon:'✅',docs:[
+    {name:'Fiche autocontrôle — Peinture',type:'pdf',meta:'Nagla — Tous lots',badge:''},
+    {name:'Fiche autocontrôle — Plomberie',type:'pdf',meta:'Nadalon',badge:''},
+    {name:'Fiche autocontrôle — Électricité',type:'pdf',meta:'EES',badge:''},
+    {name:'Fiche autocontrôle — VRD',type:'pdf',meta:'IDTP',badge:''},
+  ]},
+];
+
+
+// ─── I18N : TRADUCTION FR → EN ───
+let APP_LANG='fr';
+
+const I18N_EN={
+// Écran langue / login
+"Application de chantier digitalisée":"Digitalized construction site app",
+"Choisissez votre langue":"Choose your language",
+"Tout s'affichera dans votre langue":"Everything will be displayed in your language",
+"Confirmer →":"Confirm →",
+"Mon profil":"My profile",
+"Conducteur de travaux":"Site manager",
+"Chef de chantier":"Site foreman",
+"Sous-traitant":"Subcontractor",
+"Directeur de projet":"Project director",
+"Nom / Prénom":"Last name / First name",
+"Entreprise":"Company",
+"Clé de sécurité":"Security key",
+"Valider":"Validate",
+"Clé validée ✓":"Key validated ✓",
+"Chantier":"Site",
+"— Validez votre clé d'abord —":"— Validate your key first —",
+"Projet LABACHOTTE — Sens (89)":"LABACHOTTE Project — Sens (89)",
+"Projet SNCF — Migennes (89)":"SNCF Project — Migennes (89)",
+"Accéder au chantier →":"Access the site →",
+"Connexion via QR Code →":"Login via QR Code →",
+"Scanner":"Scan",
+// Accueil
+"Bonjour 👋":"Hello 👋",
+"Réserves à lever":"Snags to clear",
+"sur ce chantier":"on this site",
+"Autocontrôles":"Self-inspections",
+"8 / 12 réalisés":"8 / 12 completed",
+"Autocontrôles à faire":"Self-inspections to do",
+"Autocontrôle — EES Électricité":"Self-inspection — EES Electrical",
+"Tableau T3B — Bât. A Niv.3 · Échéance aujourd'hui":"Panel T3B — Bldg A Lvl.3 · Due today",
+"Autocontrôle — Nagla Peinture":"Self-inspection — Nagla Painting",
+"Enduit niveau 2 — Bâtiment A · Échéance demain":"Level 2 coating — Building A · Due tomorrow",
+"Court-circuit tableau T3B — EES":"Short circuit panel T3B — EES",
+"Bâtiment A — Niveau 3":"Building A — Level 3",
+"MOYEN":"MEDIUM","FAIBLE":"LOW",
+"Fissure mur porteur — JR77":"Load-bearing wall crack — JR77",
+"Bâtiment B — R+2":"Building B — 2nd floor",
+"Finition peinture incomplète — Nagla":"Incomplete paint finish — Nagla",
+"Appartement A101":"Apartment A101","Appartement B201":"Apartment B201","Appartement A201":"Apartment A201",
+"Joint manquant siphon — Nadalon":"Missing trap seal — Nadalon",
+"Tâches bloquées":"Blocked tasks",
+"Pose radiateur — Bâtiment B":"Radiator installation — Building B",
+"Manque 2ème couche peinture (Nagla)":"Missing 2nd paint coat (Nagla)",
+"Menuiseries ext. — Pavillons 5 à 8":"Ext. joinery — Houses 5 to 8",
+"Livraison retardée 3 jours (Menuiserie Bouille)":"Delivery delayed 3 days (Menuiserie Bouille)",
+"Installation tableau T3B — Bât. A":"Panel T3B installation — Bldg A",
+"Réserve urgente à lever en priorité (EES)":"Urgent snag to clear first (EES)",
+// Chat
+"Réserves Chantier":"Site Snags",
+"Mehdi : Court-circuit tableau T3B détecté...":"Mehdi: Short circuit detected on panel T3B...",
+"Général — Tous intervenants":"General — All contractors",
+"CT Martin : Réunion vendredi 14h, présence obligatoire":"CT Martin: Meeting Friday 2pm, attendance required",
+"EES — Électricité":"EES — Electrical",
+"Vous : Plans mis à jour reçus, merci":"You: Updated plans received, thanks",
+"Hier":"Yesterday",
+"Nadalon — Plomberie":"Nadalon — Plumbing",
+"Karim : Autocontrôle niveau 2 terminé ✅":"Karim: Level 2 self-inspection done ✅",
+"Nagla — Peinture":"Nagla — Painting",
+"Lun":"Mon","Ven":"Fri",
+"JR77 — Maçonnerie":"JR77 — Masonry",
+"João : Travaux niveau 4 commencent demain":"João: Level 4 works start tomorrow",
+"IDTP — VRD":"IDTP — Roads & utilities",
+"Ahmed : Terrassement zone C terminé":"Ahmed: Zone C earthworks completed",
+"Livraison reportée de 3 jours":"Delivery postponed by 3 days",
+"12 membres":"12 members","4 membres":"4 members","3 membres":"3 members","5 membres":"5 members","2 membres":"2 members",
+"12 membres · 3 non lus":"12 members · 3 unread","28 membres · 7 non lus":"28 members · 7 unread","3 membres · 1 non lu":"3 members · 1 unread",
+"Réserves":"Snags",
+// Messages du chat
+"Le fil rouge est coupé, il faut réparer immédiatement.":"The red wire is cut, it must be repaired immediately.",
+"Reçu. Priorité haute.":"Received. High priority.",
+"2 heures avec le matériel en stock.":"2 hours with the equipment in stock.",
+"Réunion vendredi 14h salle B. Présence obligatoire.":"Meeting Friday 2pm room B. Attendance required.",
+"Les travaux du niveau 4 commencent demain à 7h.":"Level 4 works start tomorrow at 7am.",
+"Je confirme ma présence.":"I confirm my attendance.",
+"Plans T2A disponibles sur serveur.":"T2A plans available on the server.",
+"Plans reçus, merci.":"Plans received, thanks.",
+"Autocontrôle niveau 2 terminé ✅":"Level 2 self-inspection done ✅",
+"Parfait. On passe au niveau 3 demain.":"Perfect. We move to level 3 tomorrow.",
+"Pouvons-nous décaler le début à vendredi ?":"Can we postpone the start to Friday?",
+"Non, planning maintenu.":"No, schedule maintained.",
+"Les travaux du niveau 4 commencent demain.":"Level 4 works start tomorrow.",
+"Terrassement zone C terminé.":"Zone C earthworks completed.",
+"Bien reçu.":"Received.",
+"Livraison pavillons 5-8 reportée 3 jours.":"Houses 5-8 delivery postponed 3 days.",
+"Traduction":"Translation","Traduit automatiquement":"Automatically translated",
+// Onglets Tâches
+"Progression":"Progress","Fiches tâches":"Task sheets",
+"Semaine 23 — Juin 2025":"Week 23 — June 2025",
+"Tableau de progression":"Progress table",
+"Lot / Tâche":"Lot / Task",
+"Promesses tenues par entreprise":"Commitments kept by company",
+// Données progression / LPS
+"ISOLATIONS + CHAPE":"INSULATION + SCREED","PRÉPARATION":"PREPARATION","ENDUIT":"COATING",
+"IMPRESSION 1 COUCHE":"PRIMER 1 COAT","POSE BAIGNOIRE":"BATHTUB INSTALLATION","POSE RECEVEUR":"SHOWER TRAY",
+"TABLEAU ÉLECTRIQUE":"ELECTRICAL PANEL","POSE RADIATEUR":"RADIATOR INSTALLATION","2ND COUCHES PEINTURE":"2ND PAINT COATS",
+"Protéger portes et fenêtres":"Protect doors and windows","Enduits":"Coatings","Impression":"Primer coat",
+"Pose baignoire":"Bathtub installation","Pose receveur":"Shower tray installation","Tableau électrique":"Electrical panel",
+"Pose radiateur":"Radiator installation","2ndes couches peinture":"2nd paint coats",
+"Lun 02":"Mon 02","Mar 03":"Tue 03","Mer 04 ●":"Wed 04 ●","Jeu 05":"Thu 05","Ven 06":"Fri 06",
+"Peinture prim.":"Primer paint","Plomberie EU":"Waste plumbing","Maçonnerie":"Masonry","Électricité T2":"Electrical T2",
+"Peinture 2e cch":"Paint 2nd coat","Radiateurs":"Radiators","VRD réseaux":"Utility networks","Menuiseries":"Joinery",
+"Électricité T4":"Electrical T4","Sanitaires":"Sanitary fittings",
+"Sélectionner une entreprise":"Select a company",
+"Plomberie":"Plumbing","Électricité":"Electrical","Peinture":"Painting","VRD":"Roads & utilities","Menuiserie Intérieure":"Interior joinery",
+"+ Tâche":"+ Task",
+"Bloqué":"Blocked","En cours":"In progress","Terminé":"Done","À faire":"To do","Bloqué 🚨":"Blocked 🚨","Terminé ✅":"Done ✅",
+// Fiches tâches — titres
+"Pose receveur douche — A101":"Shower tray installation — A101",
+"Colonne EU — Niveaux 3-4":"Waste stack — Levels 3-4",
+"Raccordement sanitaires — A201":"Sanitary connections — A201",
+"Installation tableau T3B":"Panel T3B installation",
+"Tableau T2A — Bâtiment A":"Panel T2A — Building A",
+"Tableau T4A — Bâtiment A":"Panel T4A — Building A",
+"Primaire & Enduit — Niv.1 Bât A":"Primer & Coating — Lvl.1 Bldg A",
+"2ème couche — Bâtiment B":"2nd coat — Building B",
+"Finitions — Appartement A101":"Finishes — Apartment A101",
+"Murs R+3 — Axe C":"Walls 3rd floor — Axis C",
+"Murs R+2 — Axe B":"Walls 2nd floor — Axis B",
+"Fissure mur porteur — Bât B":"Load-bearing wall crack — Bldg B",
+"Terrassement zone C":"Zone C earthworks",
+"Réseaux EU/EP extérieurs":"External waste/rainwater networks",
+"Menuiseries ext. Pavillons 1-4":"Ext. joinery Houses 1-4",
+"Menuiseries ext. Pavillons 5-8":"Ext. joinery Houses 5-8",
+"Menuiseries int. Bâtiment A":"Int. joinery Building A",
+// Fiches — localisations
+"Bât. B — tous niveaux":"Bldg B — all levels",
+"Cage escalier Bât. A":"Stairwell Bldg A",
+"Bât. A — Niveau 3, Zone B":"Bldg A — Level 3, Zone B",
+"Bât. A — Niveau 2":"Bldg A — Level 2","Bât. A — Niveau 4":"Bldg A — Level 4","Bât. A — Niv.1":"Bldg A — Lvl.1",
+"R+3 — Axe C":"3rd floor — Axis C","R+2 — Axe B":"2nd floor — Axis B",
+"Zone extérieure C":"External zone C","Zones A-B-C extérieures":"External zones A-B-C",
+"Pavillons 1 à 4":"Houses 1 to 4","Pavillons 5 à 8":"Houses 5 to 8",
+"Bât. A — tous appartements":"Bldg A — all apartments",
+"Bât. B — R+2":"Bldg B — 2nd floor",
+// Fiches — instructions (par ligne)
+"Poser et raccorder les radiateurs selon le schéma hydraulique.":"Install and connect the radiators as per the hydraulic diagram.",
+"ATTENTION : tâche bloquée, attendre la 2e couche de peinture Bât B.":"WARNING: task blocked, wait for the 2nd paint coat Bldg B.",
+"Poser les receveurs de douche et effectuer les raccordements EU.":"Install shower trays and make waste connections.",
+"Pose et raccordement colonne eaux usées niveaux 3 et 4. Pente min 1%.":"Install and connect waste stack levels 3 and 4. Min slope 1%.",
+"Raccorder tous appareils sanitaires. Test pression 6 bar obligatoire.":"Connect all sanitary fixtures. 6 bar pressure test mandatory.",
+"Installer et raccorder le tableau T3B. Vérifier conformité NF C 15-100.":"Install and connect panel T3B. Check NF C 15-100 compliance.",
+"Réserve urgente signalée — diagnostiquer avant toute intervention.":"Urgent snag reported — diagnose before any work.",
+"Installation terminée. Plans à jour sur le serveur.":"Installation complete. Updated plans on the server.",
+"Installer T4A selon même schéma que T2A.":"Install T4A following the same layout as T2A.",
+"Application primaire puis enduit. Respecter 24h de séchage.":"Apply primer then coating. Allow 24h drying.",
+"Appliquer 2ème couche. PRIORITAIRE — débloque pose radiateurs.":"Apply 2nd coat. PRIORITY — unblocks radiator installation.",
+"Reprendre finitions signalées en réserve.":"Redo finishes reported as snags.",
+"Montage murs séparation. Blocs béton 20x20x50. Vérifier modif. trame 4.":"Build partition walls. Concrete blocks 20x20x50. Check grid 4 modification.",
+"Travaux terminés. Contrôle qualité effectué.":"Works completed. Quality check done.",
+"Diagnostiquer et reprendre la fissure constatée.":"Diagnose and repair the identified crack.",
+"Terrassement terminé.":"Earthworks completed.",
+"Pose réseaux eaux usées et eaux pluviales extérieures.":"Install external waste and rainwater networks.",
+"Pose terminée.":"Installation completed.",
+"En attente de livraison. Report de 3 jours.":"Awaiting delivery. 3-day postponement.",
+"Pose portes intérieures et huisseries.":"Install interior doors and frames.",
+"Instructions à compléter.":"Instructions to be completed.",
+// Fiches — blocages
+"2ème couche peinture Bât B":"2nd paint coat Bldg B",
+"Nagla doit terminer avant intervention":"Nagla must finish before work",
+"Court-circuit tableau T3B":"Short circuit panel T3B",
+"Réserve urgente à lever en premier":"Urgent snag to clear first",
+"Réserve finition A101":"Finish snag A101",
+"À lever avant réception":"To clear before handover",
+"Réserve fissure mur porteur":"Load-bearing wall crack snag",
+"Expertise en attente":"Expert assessment pending",
+"Livraison retardée":"Delayed delivery",
+"Report 3 jours — fournisseur":"3-day postponement — supplier",
+"Tâches bloquantes":"Blocking tasks","Documents":"Documents","Instructions":"Instructions",
+"Tâches › Fiche tâche":"Tasks › Task sheet",
+// Modales
+"Ajouter une tâche":"Add a task","Annuler":"Cancel","Action sur la tâche":"Task action",
+"✅ Marquer comme Faite":"✅ Mark as Done","⬜ Marquer comme Non réalisée":"⬜ Mark as Not done",
+"Ajouter une tâche bloquée":"Add a blocked task","Ajouter":"Add","Nouvelle tâche":"New task",
+"Saisir un pourcentage":"Enter a percentage","Enregistrer":"Save",
+"Alerte de dépendance":"Dependency alert","Compris":"Got it",
+// Autocontrôles
+"Avant réalisation":"Before execution","Pendant la réalisation":"During execution","Après la réalisation":"After execution",
+"Bâtiment A":"Building A","Bâtiment B":"Building B","Bâtiment C":"Building C","Bâtiment D":"Building D","Pavillons":"Houses",
+"Pavillon 1":"House 1","Pavillon 2":"House 2","Pavillon 3":"House 3","Pavillon 4":"House 4","Pavillon 5":"House 5","Pavillon 6":"House 6","Pavillon 7":"House 7","Pavillon 8":"House 8","Pavillon 9":"House 9","Pavillon 10":"House 10","Pavillon 11":"House 11","Pavillon 12":"House 12","Pavillon 13":"House 13","Pavillon 14":"House 14",
+"Supports propres, secs, lisses, prêts à peindre":"Surfaces clean, dry, smooth, ready to paint",
+"Peintures conformes aux spécifications (lavable, lessivable)":"Paints compliant with specifications (washable, scrubbable)",
+"Nombre de couches respecté, peinture uniforme sans défaut":"Number of coats respected, uniform paint without defects",
+"Zones adjacentes propres et protégées":"Adjacent areas clean and protected",
+"Peinture sans défauts (traces de rouleau, poils, coulures)":"Paint free of defects (roller marks, bristles, runs)",
+"Ouvrages protégés jusqu'à la livraison":"Works protected until handover",
+"Plans à jour, cohérents avec les prescriptions":"Plans up to date, consistent with requirements",
+"Matériaux certifiés conformes aux spécifications (type, diamètre)":"Certified materials compliant with specifications (type, diameter)",
+"Canalisations protégées, cheminement respectant les distances":"Pipes protected, routing respecting distances",
+"Raccords propres et conformes, fixations solides":"Clean and compliant fittings, solid fixings",
+"Pentes conformes pour écoulement gravitaire efficace":"Compliant slopes for efficient gravity drainage",
+"Absence de fuite après essais de mise en pression/eau":"No leaks after pressure/water tests",
+"Appareils sanitaires et robinetterie fonctionnels, sans fuite":"Sanitary fixtures and taps functional, leak-free",
+"Plans à jour et cohérents avec CCTP et réglementation":"Plans up to date and consistent with specifications and regulations",
+"Matériaux certifiés NF, conformes aux spécifications et au DOE":"NF-certified materials, compliant with specifications and as-built file",
+"Câbles protégés, cheminement respectant les zones techniques":"Cables protected, routing respecting technical zones",
+"Raccordements propres, serrage conforme, continuité conducteurs":"Clean connections, compliant tightening, conductor continuity",
+"Mise à la terre conforme, connexions équipotentielles réalisées":"Compliant earthing, equipotential connections completed",
+"Mesures conformes aux seuils réglementaires (PV de mesures)":"Measurements compliant with regulatory thresholds (test report)",
+"Tous circuits et équipements fonctionnels et conformes aux usages":"All circuits and equipment functional and fit for use",
+"Tableaux électriques correctement repérés, schémas à jour":"Electrical panels correctly labelled, diagrams up to date",
+"Plans conformes aux autorisations et exigences du projet":"Plans compliant with permits and project requirements",
+"Fond de fouille stable, purgé de matériaux impropres":"Stable excavation base, cleared of unsuitable materials",
+"Pentes régulières, alignement respecté pour bon écoulement":"Regular slopes, alignment respected for proper drainage",
+"Lit de pose correct, remblai compacté par couches successives":"Correct bedding, backfill compacted in successive layers",
+"Absence de fuite, continuité des réseaux secs":"No leaks, continuity of dry networks",
+"Compacité suffisante pour éviter les tassements ultérieurs":"Sufficient compaction to prevent future settlement",
+"Plans conformes aux autorisations et raccordements":"Plans compliant with permits and connections",
+"Matériaux certifiés, conformes aux classes de résistance":"Certified materials, compliant with strength classes",
+"Raccordements propres, étanches, sans risque de fuite":"Clean, watertight connections, no leak risk",
+"Éléments de surface correctement positionnés et scellés":"Surface elements correctly positioned and sealed",
+"Fonctionnalité des réseaux et accès aux regards":"Network functionality and manhole access",
+"Compacité des tranchées remblayées":"Compaction of backfilled trenches",
+"Vérification validée ✅":"Check validated ✅",
+// Documents
+"Importer un document":"Import a document","Dossier":"Folder",
+"Plans Architecturaux":"Architectural Plans","Plans Techniques":"Technical Plans",
+"Documents Administratifs":"Administrative Documents","Fiches d'autocontrôle":"Self-inspection sheets",
+"Plan masse — LABACHOTTE":"Site plan — LABACHOTTE","Mis à jour il y a 3 jours":"Updated 3 days ago",
+"Plans de niveaux — Bâtiment A":"Floor plans — Building A","Plans de niveaux — Bâtiment B":"Floor plans — Building B",
+"Version 3 · 12 pages":"Version 3 · 12 pages","Version 2 · 10 pages":"Version 2 · 10 pages",
+"Plans pavillons 1 à 14":"Houses 1 to 14 plans",
+"Plan plomberie — Tous bâtiments":"Plumbing plan — All buildings","Lot Nadalon":"Nadalon package",
+"Plan électricité — Bâtiment A":"Electrical plan — Building A","Lot EES · Version 4":"EES package · Version 4",
+"Plan VRD extérieurs":"External utilities plan","Lot IDTP":"IDTP package",
+"Plan menuiseries extérieures":"External joinery plan","Lot Menuiserie Bouille":"Menuiserie Bouille package",
+"CCTP — Corps d'état":"Specifications — Trades","Planning général prévisionnel":"General provisional schedule",
+"Mis à jour 15/05/2025":"Updated 15/05/2025","Compte-rendu réunion S22":"Meeting minutes W22",
+"PV de réception partielle":"Partial acceptance report",
+"Fiche autocontrôle — Peinture":"Self-inspection sheet — Painting",
+"Fiche autocontrôle — Plomberie":"Self-inspection sheet — Plumbing",
+"Fiche autocontrôle — Électricité":"Self-inspection sheet — Electrical",
+"Fiche autocontrôle — VRD":"Self-inspection sheet — Roads & utilities",
+"Nagla — Tous lots":"Nagla — All packages",
+// Assistant
+"Assistant Chantier":"Site Assistant","Eiffage Chantier IA · LABACHOTTE":"Eiffage Chantier AI · LABACHOTTE","En ligne":"Online",
+"Réserves urgentes ?":"Urgent snags?","Qui est en retard ?":"Who is late?","Résumé du chantier":"Site summary",
+"Meilleures promesses ?":"Best commitments?","Prochains autocontrôles":"Next self-inspections",
+"Bonjour ! Je suis votre assistant chantier pour le projet":"Hello! I'm your site assistant for the",
+". Je connais vos réserves, votre planning LPS, vos autocontrôles et les performances de vos entreprises. Comment puis-je vous aider ?":"project. I know your snags, your LPS schedule, your self-inspections and your companies' performance. How can I help you?",
+// Navigation
+"Accueil":"Home","Tâches":"Tasks",
+// Formulaire réserve
+"Signaler une réserve":"Report a snag","Prendre une photo":"Take a photo","Changer":"Change",
+"— Sélectionner —":"— Select —","Priorité *":"Priority *","Faible":"Low","Moyen":"Medium","Urgent":"Urgent",
+"Envoyer la réserve →":"Send the snag →",
+// Toasts
+"Clé validée !":"Key validated!","Entrez une clé":"Enter a key",
+"Prenez une photo":"Take a photo","Sélectionnez la zone":"Select the zone","Réserve envoyée !":"Snag sent!",
+"Tâche marquée Faite ✅":"Task marked Done ✅","Tâche marquée Non réalisée":"Task marked Not done",
+"Max 3 tâches par case":"Max 3 tasks per cell","Tâche ajoutée !":"Task added!",
+"Progression mise à jour ✅":"Progress updated ✅","Entrez un titre":"Enter a title",
+"Tâche bloquante ajoutée":"Blocking task added","Tâche bloquée ajoutée !":"Blocked task added!",
+"À préciser":"To be specified","Raison à préciser":"Reason to be specified",
+};
+
+// Règles par sous-chaînes (textes dynamiques avec variables)
+const I18N_SUBSTR=[
+["⚠️ Alerte dépendance !","⚠️ Dependency alert!"],
+["ne peut pas commencer si","cannot start if"],
+["n'est pas à 100% sur","is not at 100% on"],
+["Actuellement :","Currently:"],
+["non commencé","not started"],
+["Ouverture : ","Opening: "],
+["Hier ","Yesterday "],
+["Lun ","Mon "],["Mar ","Tue "],["Mer ","Wed "],["Jeu ","Thu "],["Ven ","Fri "],
+];
+
+// Placeholders
+const I18N_PLACEHOLDERS={
+"Rechercher un groupe...":"Search a group...",
+"Message...":"Message...",
+"Nom de la tâche":"Task name",
+"Raison du blocage...":"Blocking reason...",
+"Rechercher dans ce dossier...":"Search in this folder...",
+"ex : Jean Dupont":"e.g. John Smith",
+"Posez une question sur le chantier...":"Ask a question about the site...",
+"Précision (couloir, salle de bain...)":"Details (hallway, bathroom...)",
+"Nom de la tâche bloquée":"Blocked task name",
+"Localisation (ex : Bât. A — Niveau 2)":"Location (e.g. Bldg A — Level 2)",
+"ex : EC-2025-XXXX":"e.g. EC-2025-XXXX",
+"Décrivez le problème...":"Describe the issue...",
+};
+
+function i18nTranslate(t){
+  if(I18N_EN[t]!==undefined) return I18N_EN[t];
+  let out=t, hit=false;
+  for(const [fr,en] of I18N_SUBSTR){
+    if(out.includes(fr)){out=out.split(fr).join(en); hit=true;}
+  }
+  return hit?out:null;
+}
+
+function i18nTranslateNode(root){
+  if(APP_LANG!=='en') return;
+  if(root.nodeType===3){
+    const raw=root.nodeValue, t=raw.trim(); if(!t) return;
+    const tr=i18nTranslate(t);
+    if(tr!==null && tr!==t){ // n'écrire que si le texte change réellement (évite les boucles)
+      const lead=raw.match(/^\s*/)[0], trail=raw.match(/\s*$/)[0];
+      root.nodeValue=lead+tr+trail;
+    }
+    return;
+  }
+  if(root.nodeType!==1&&root.nodeType!==9) return;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  const nodes=[]; let n;
+  while(n=w.nextNode()) nodes.push(n);
+  nodes.forEach(node=>i18nTranslateNode(node));
+  if(root.querySelectorAll){
+    root.querySelectorAll('[placeholder]').forEach(e=>{
+      const tr=I18N_PLACEHOLDERS[e.getAttribute('placeholder')];
+      if(tr) e.setAttribute('placeholder',tr);
+    });
+    root.querySelectorAll('[title]').forEach(e=>{
+      const tr=i18nTranslate(e.getAttribute('title'));
+      if(tr!==null && tr!==e.getAttribute('title')) e.setAttribute('title',tr);
+    });
+  }
+}
+
+// Observe le DOM : tout contenu ajouté dynamiquement est traduit automatiquement
+const i18nObserver=new MutationObserver(muts=>{
+  if(APP_LANG!=='en') return;
+  muts.forEach(m=>{
+    if(m.type==='characterData'){ i18nTranslateNode(m.target); }
+    if(m.addedNodes){ m.addedNodes.forEach(nd=>i18nTranslateNode(nd)); }
+  });
+});
+document.addEventListener('DOMContentLoaded',()=>{
+  i18nObserver.observe(document.body,{childList:true,subtree:true,characterData:true});
+});
+if(document.body){ i18nObserver.observe(document.body,{childList:true,subtree:true,characterData:true}); }
+
+// ─── ASSISTANT : réponses préenregistrées EN ───
+const CANNED_ANSWERS_EN=[
+  {keys:['late','who is late','delay','behind','delays'],
+   reply:"According to the LPS schedule, here are the current delays:\n\n🔴 **Nagla Painting** is late on the **2nd paint coats** (only 30% on A001, A002 and A101) and is blocking the radiator installation in Building B.\n\n🟠 **Menuiserie Bouille**: delivery of exterior joinery for **Houses 5 to 8 delayed by 3 days** (lowest commitment rate: 40%).\n\n🟠 **EES Electrical**: electrical panel A001 at **0%**, blocked by the urgent T3B snag.\n\nI recommend following up with Nagla first to unblock the painting → radiators chain."},
+  {keys:['snag','snags','how many snag','reserve','reserves','punch list'],
+   reply:"There are **4 snags to clear** on the LABACHOTTE site:\n\n🔴 **URGENT** — Short circuit panel T3B (EES Electrical) — Bldg A, Level 3\n🟠 **MEDIUM** — Load-bearing wall crack (JR77 Masonry) — Bldg B, 2nd floor\n🟡 **LOW** — Incomplete paint finish (Nagla) — Apartment A101\n🟡 **LOW** — Missing shower trap seal (Nadalon) — Apartment B201\n\n⚠️ The T3B snag blocks the electrical panel installation: it must be dealt with before any EES work in this zone."},
+  {keys:['urgent','priority','critical'],
+   reply:"**1 urgent snag** is currently open:\n\n🔴 **Short circuit panel T3B** — reported by Mehdi this morning at 09:18\n📍 Building A — Level 3, Zone B\n👷 Company concerned: **EES Electrical**\n\nThis snag **blocks the T3B panel installation** (NF C 15-100 compliance to check). A diagnosis is required before any work. The task sheet and T3B electrical plan are available in the Docs tab."},
+  {keys:['summary','site summary','overview','status','report'],
+   reply:"📊 **LABACHOTTE site summary — Sens (89)**\n\n• **4 snags to clear** including 1 urgent (short circuit T3B, Bldg A)\n• **3 blocked tasks**: radiators Bldg B, joinery Houses 5-8, panel T3B\n• **Progress**: radiator installation at 90% on A001, electrical panels between 0 and 60%, 2nd paint coats at 30%\n• **Best company**: Nadalon Plumbing (80% commitments kept, self-inspections at 100%)\n• **Watch point**: JR77 has completed **no self-inspection** (0/2) and Menuiserie Bouille is at 40% commitments kept.\n\nToday's priority: clear the T3B snag and follow up with Nagla on the painting."},
+  {keys:['commitment','commitments','promise','promises','best','reliable','performance'],
+   reply:"🏆 **Commitments kept ranking** (tasks done / planned):\n\n1. **Nadalon Plumbing** — 80% (8/10) ✅\n2. **IDTP** — 75% (3/4)\n3. **JR77 Masonry** — 67% (6/9)\n4. **EES Electrical** — 63% (5/8)\n5. **Nagla Painting** — 57% (4/7)\n6. **Menuiserie Bouille** — 40% (2/5) ⚠️\n\nNadalon remains the most reliable company on site. Menuiserie Bouille needs watching: less than one commitment in two is kept."},
+  {keys:['self-inspection','self inspection','inspection','inspections','check','checks','next self'],
+   reply:"📋 **Self-inspection status by company:**\n\n✅ **Nadalon Plumbing** — 100% (3/3 checks)\n🟠 **EES Electrical** — 33% (1/3)\n🟠 **Nagla Painting** — 33% (1/3)\n🔴 **JR77 Masonry** — 0% (0/2) ⚠️\n\n**Next self-inspections to complete:**\n• JR77: screed + insulation check (none done to date)\n• EES: NF C 15-100 compliance check after clearing the T3B snag\n• Nagla: finish check before A101 handover\n\nI suggest sending a reminder to JR77 via the site chat."},
+  {keys:['blocked','blockage','stuck'],
+   reply:"🚫 **3 tasks are currently blocked:**\n\n1. **Radiator installation — Building B**: waiting for the 2nd paint coat (Nagla)\n2. **Ext. joinery — Houses 5 to 8**: delivery delayed by 3 days (Menuiserie Bouille)\n3. **Panel T3B installation — Bldg A**: urgent snag to clear first (EES)\n\nQuickest unblock: follow up with Nagla on the painting, which immediately frees Nadalon for the radiators."},
+  {keys:['nagla'],
+   reply:"**Nagla Painting — current status:**\n\n• Commitments kept: **57%** (4/7)\n• Self-inspections: **33%** (1/3)\n• Late on the **2nd paint coats** (30% on A001, A002, A101)\n• 1 low snag: incomplete finish in A101\n• ⚠️ Their delay **blocks the radiator installation** in Building B (Nadalon)\n\nRecommendation: follow up via the multilingual chat with a firm deadline this week."},
+  {keys:['nadalon'],
+   reply:"**Nadalon Plumbing — current status:**\n\n• Commitments kept: **80%** (8/10) — best company on site 🏆\n• Self-inspections: **100%** (3/3)\n• Radiator installation: 90% on A001, in progress elsewhere\n• 1 low snag: missing shower trap seal in B201\n• Pending: radiators Bldg B (blocked by Nagla's painting)"},
+  {keys:['ees','electrical','panel'],
+   reply:"**EES Electrical — current status:**\n\n• Commitments kept: **63%** (5/8)\n• Self-inspections: **33%** (1/3)\n• Electrical panels: 0% (A001), 50% (A002), 60% (A101)\n• 🔴 **1 URGENT snag**: short circuit panel T3B, Bldg A Level 3\n\nThe T3B installation is blocked until the snag is cleared. Diagnosis required before work (NF C 15-100)."},
+  {keys:['jr77','masonry'],
+   reply:"**JR77 Masonry — current status:**\n\n• Commitments kept: **67%** (6/9)\n• Self-inspections: **0%** (0/2) ⚠️ no check completed\n• Placo TM8: waiting to start\n• 1 medium snag: load-bearing wall crack, Bldg B 2nd floor (expert assessment pending)\n\nRecommended action: require both self-inspections before the next site meeting."},
+  {keys:['hello','hi ','good morning','hey'],
+   reply:"Hello! 👋 I'm the **LABACHOTTE** site assistant. You can ask me for example:\n\n• \"Who is late?\"\n• \"How many snags are left?\"\n• \"Site summary\"\n• \"Self-inspection status\"\n\nWhat can I do for you?"},
+  {keys:['thank','thanks','great','perfect','awesome'],
+   reply:"You're welcome! 💪 Don't hesitate if you need an update on snags, the LPS schedule or self-inspections. Have a good day on site!"},
+];
+
+// ─── HELPERS ───
+const el=id=>document.getElementById(id);
+function showToast(msg,type='success'){
+  const t=el('toast');
+  t.style.background=type==='info'?'var(--info)':type==='warning'?'var(--warn)':type==='error'?'var(--red)':'var(--success)';
+  el('toast-msg').textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3000);
+}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+  const s=el(id); s.style.display='flex'; s.classList.add('active');
+}
+function updateTime(){const n=new Date();el('stime').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
+updateTime(); setInterval(updateTime,30000);
+
+function selLang(btn){document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
+function confirmLang(){
+  const sel=document.querySelector('.lang-btn.sel');
+  const lang=sel?sel.dataset.lang:'fr';
+  APP_LANG=(lang==='en')?'en':'fr'; // Démo : FR et EN entièrement traduits, autres langues affichées en FR
+  if(APP_LANG==='en'){ i18nTranslateNode(document.body); }
+  showScreen('scr-login');
+}
+function validateKey(){
+  if(!el('l-key').value.trim()){showToast('Entrez une clé','error');return;}
+  el('key-ok').style.display='flex';
+  el('l-chantier').disabled=false;
+  el('l-chantier').innerHTML='<option value="labachotte">Projet LABACHOTTE — Sens (89)</option><option value="sncf">Projet SNCF — Migennes (89)</option>';
+  showToast('Clé validée !');
+}
+function doLogin(){
+  const name=el('l-name').value||'Étienne Martin';
+  const rm={ct:'Conducteur de travaux',chef:'Chef de chantier',st:'Sous-traitant',dir:'Directeur de projet'};
+  el('usr-av').textContent=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  el('g-name').textContent=name;
+  el('g-role').textContent=rm[el('l-role').value]||'Conducteur de travaux';
+  showScreen('scr-app');
+  renderLps(); renderPromesses(); renderProgTable(); renderDocs(); updateAccueilAc();
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  el('tp-'+tab).classList.add('active'); el('ni-'+tab).classList.add('active');
+}
+function switchSub(tab){
+  ['lps','prog','fiches','ac'].forEach(t=>{
+    const el2=el('st-'+t); if(el2)el2.classList.remove('active');
+    const sc=el('sc-'+t); if(sc)sc.style.display='none';
+  });
+  el('st-'+tab).classList.add('active'); el('sc-'+tab).style.display='block';
+}
+
+// ─── CHAT ───
+function openConv(id){
+  curConvId=id; const ci=convInfo[id]||{name:id,members:''};
+  el('conv-nm').textContent=ci.name; el('conv-mb').textContent=ci.members;
+  renderMsgs(id); showScreen('scr-conv');
+}
+function renderMsgs(id){
+  const list=msgs[id]||[]; const c=el('chat-msgs'); c.innerHTML='';
+  list.forEach(m=>{
+    const d=document.createElement('div'); d.className='cmsg '+(m.mine?'mine':'other');
+    let h='';
+    if(!m.mine) h+=`<div class="cmsg-sender">${m.sender}${m.langTag?`<span class="lpill">${m.langTag}</span>`:''}</div>`;
+    if(m.photo) h+=`<div class="photo-msg">🔌<div class="photo-lbl">${m.photoLabel}</div></div>`;
+    if(m.translated){
+      h+=`<div class="cmsg-bubble"><div class="cmsg-translated">${m.translated}</div><div class="cmsg-original">🌐 ${m.text}</div></div>`;
+    } else {
+      h+=`<div class="cmsg-bubble"><div class="cmsg-plain">${m.text}</div></div>`;
+    }
+    h+=`<div class="cmsg-time">${m.time}</div>`;
+    d.innerHTML=h; c.appendChild(d);
+  });
+  setTimeout(()=>c.scrollTop=c.scrollHeight,50);
+}
+function closeConv(){showScreen('scr-app');switchTab('chat');}
+function sendMsg(){
+  const inp=el('chat-inp'); const txt=inp.value.trim(); if(!txt) return;
+  (msgs[curConvId]=msgs[curConvId]||[]).push({mine:true,sender:'Vous',text:txt,time:'À l\'instant'});
+  renderMsgs(curConvId); inp.value='';
+}
+function openReserveForm(){showScreen('scr-reserve');}
+function closeReserveForm(){showScreen('scr-conv');}
+function simPhoto(){photoTaken=true;el('pz').style.display='none';el('pp').classList.add('show');}
+function selPrio(p,btn){document.querySelectorAll('.prio-btn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');curPrio=p;}
+function submitReserve(){
+  if(!photoTaken){showToast('Prenez une photo','error');return;}
+  const zone=el('r-zone').value; if(!zone){showToast('Sélectionnez la zone','error');return;}
+  msgs['reserves'].push({mine:true,sender:'Vous',text:`Réserve — ${zone}`,time:'À l\'instant'});
+  const cur=parseInt(el('stat-res').textContent)||0; el('stat-res').textContent=cur+1;
+  showToast('Réserve envoyée !');
+  setTimeout(()=>{closeReserveForm();renderMsgs('reserves');},1200);
+  photoTaken=false; el('pz').style.display='flex'; el('pp').classList.remove('show');
+}
+
+// ─── LPS ───
+function renderLps(){
+  const tbl=el('lps-tbl'); tbl.innerHTML='';
+  let hdr='<tr><th class="lps-th zone-hdr">Zone</th>';
+  days.forEach(d=>hdr+=`<th class="lps-th${d.includes('●')?' today':''}">${d}</th>`);
+  hdr+='</tr>'; tbl.innerHTML=hdr;
+  zones.forEach(z=>{
+    let row=`<tr><td class="lps-td zlbl"><div class="zlbl-txt">${z}</div></td>`;
+    days.forEach(d=>{
+      const tasks=(lpsGrid[z]&&lpsGrid[z][d])||[];
+      row+=`<td class="lps-td" onclick="openLpsMo('${z}','${d.replace(/'/g,"\\'")}')">`;
+      tasks.slice(0,3).forEach((t,i)=>{
+        const extra=t.st==='done'?' cdone':t.st==='notdone'?' cnotdone':'';
+        row+=`<span class="lps-chip ${t.c}${extra}" oncontextmenu="return false" ontouchstart="handleLpsLongPress(event,'${z}','${d.replace(/'/g,"\\'")}',${i})" onmousedown="startLpsHold(event,'${z}','${d.replace(/'/g,"\\'")}',${i})">${t.l}</span>`;
+      });
+      if(tasks.length<3) row+=`<div class="lps-add">+</div>`;
+      row+='</td>';
+    });
+    row+='</tr>'; tbl.innerHTML+=row;
+  });
+}
+
+// Long press / hold logic
+let lpsHoldTimer=null;
+function startLpsHold(e,z,d,i){
+  e.preventDefault();
+  lpsHoldTimer=setTimeout(()=>openLpsAction(z,d,i),500);
+  document.addEventListener('mouseup',()=>{clearTimeout(lpsHoldTimer);},{once:true});
+}
+function handleLpsLongPress(e,z,d,i){
+  e.preventDefault();
+  openLpsAction(z,d,i);
+}
+function openLpsAction(z,d,i){
+  curLpsChip={z,d,i};
+  const t=(lpsGrid[z]&&lpsGrid[z][d]&&lpsGrid[z][d][i]);
+  el('lps-action-title').textContent=t?t.l:'Tâche';
+  el('lps-action-mo').classList.add('show');
+}
+function setChipStatus(st){
+  if(!curLpsChip) return;
+  const {z,d,i}=curLpsChip;
+  if(lpsGrid[z]&&lpsGrid[z][d]&&lpsGrid[z][d][i]) lpsGrid[z][d][i].st=st;
+  closeLpsAction(); renderLps();
+  showToast(st==='done'?'Tâche marquée Faite ✅':'Tâche marquée Non réalisée','info');
+}
+function closeLpsAction(){el('lps-action-mo').classList.remove('show');curLpsChip=null;}
+
+function openLpsMo(zone,day){
+  curLpsCell={zone,day};
+  el('lps-mo-title').textContent=`${zone} — ${day}`;
+  const c=el('lps-mo-tasks'); c.innerHTML='';
+  const all=[];
+  Object.entries(fichesData).forEach(([co,data])=>data.tasks.forEach(t=>all.push({...t,co,color:data.color,chip:data.chip})));
+  all.forEach(t=>{
+    const d2=document.createElement('div'); d2.className='lps-mo-task';
+    d2.innerHTML=`<div class="co-dot" style="background:${t.color}"></div><div class="lps-mo-task-name">${t.title}</div>`;
+    d2.onclick=()=>addLpsTask(t); c.appendChild(d2);
+  });
+  el('lps-mo').classList.add('show');
+}
+function addLpsTask(t){
+  const {zone,day}=curLpsCell;
+  if(!lpsGrid[zone]) lpsGrid[zone]={};
+  if(!lpsGrid[zone][day]) lpsGrid[zone][day]=[];
+  if(lpsGrid[zone][day].length>=3){showToast('Max 3 tâches par case','warning');closeLpsMo();return;}
+  lpsGrid[zone][day].push({l:t.title.substring(0,14),c:t.chip,st:''});
+  closeLpsMo(); renderLps(); showToast('Tâche ajoutée !');
+}
+function closeLpsMo(){el('lps-mo').classList.remove('show');}
+
+function renderPromesses(){
+  const w=el('prom-wrap'); w.innerHTML='<div class="prom-title">Promesses tenues par entreprise</div>';
+  Object.entries(promesses).forEach(([name,p])=>{
+    const pct=Math.round(p.done/p.total*100);
+    w.innerHTML+=`<div class="prom-row"><div class="prom-name">${name}</div><div class="prom-bar-w"><div class="prom-fill" style="width:${pct}%;background:${p.color}"></div></div><div class="prom-pct">${pct}%</div></div>`;
+  });
+}
+
+// ─── DEPENDENCY RULES ───
+// key: "entIdx_subIdx_col" → prerequisite: {entIdx, subIdx} must be 100 before this can start
+const DEPENDENCIES = [
+  // Pose radiateur requires 2ndes couches peinture = 100%
+  {taskEnt:'NADALON', taskName:'Pose radiateur', prereqEnt:'NAGLA', prereqName:'2ndes couches peinture'},
+];
+
+function findProgRow(entName, subName){
+  for(let ei=0;ei<progData.length;ei++){
+    const row=progData[ei];
+    if(row.ent===entName){
+      for(let si=0;si<row.subs.length;si++){
+        if(row.subs[si].name===subName) return {row,sub:row.subs[si]};
+      }
+    }
+  }
+  return null;
+}
+
+function checkDependency(entName, subName, col, newVal){
+  if(newVal===null||newVal===0) return null;
+  for(const dep of DEPENDENCIES){
+    if(dep.taskEnt===entName && dep.taskName===subName){
+      const prereq=findProgRow(dep.prereqEnt, dep.prereqName);
+      if(prereq){
+        const prereqVal=prereq.sub.vals[col];
+        if(prereqVal===null||prereqVal<100){
+          return `⚠️ Alerte dépendance !\n"${subName}" ne peut pas commencer si "${dep.prereqName}" (${dep.prereqEnt}) n'est pas à 100% sur ${col}.\nActuellement : ${prereqVal===null?'non commencé':prereqVal+'%'}`;
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// ─── PROGRESSION TABLE ───
+function pctCell(v, entName, subName, col){
+  const key=`${entName}||${subName}||${col}`;
+  if(v===null||v===undefined){
+    return `<td class="prog-td prog-td-click" onclick="openProgModal('${key}')" title="Cliquer pour saisir"><span class="pct-none">—</span></td>`;
+  }
+  const cls=v>=80?'pct-high':v>=30?'pct-mid':'pct-low';
+  return `<td class="prog-td prog-td-click ${cls}-bg" onclick="openProgModal('${key}')" title="Cliquer pour modifier"><span class="prog-cell ${cls}">${v}%</span></td>`;
+}
+
+function renderProgTable(){
+  const tbl=el('prog-table'); tbl.innerHTML='';
+  let hdr='<tr><th class="prog-th left">Entreprise</th><th class="prog-th left">Lot / Tâche</th>';
+  progCols.forEach(c=>hdr+=`<th class="prog-th">${c}</th>`);
+  hdr+='</tr>'; tbl.innerHTML=hdr;
+  progData.forEach(row=>{
+    row.subs.forEach((sub,si)=>{
+      let tr='<tr>';
+      if(si===0) tr+=`<td class="prog-td ent" rowspan="${row.subs.length}">${row.ent}</td>`;
+      tr+=`<td class="prog-td sublabel">${sub.name}</td>`;
+      progCols.forEach(col=>{
+        const v=sub.vals[col];
+        tr+=pctCell(v, row.ent, sub.name, col);
+      });
+      tr+='</tr>'; tbl.innerHTML+=tr;
+    });
+  });
+}
+
+// ─── PROG MODAL ───
+let curProgKey=null;
+function openProgModal(key){
+  curProgKey=key;
+  const [entName,subName,col]=key.split('||');
+  const found=findProgRow(entName,subName);
+  const curVal=(found&&found.sub.vals[col]!==null&&found.sub.vals[col]!==undefined)?found.sub.vals[col]:0;
+  el('prog-mo-title').textContent=`${subName}`;
+  el('prog-mo-sub').textContent=`${entName} — ${col}`;
+  el('prog-mo-slider').value=curVal;
+  el('prog-mo-val').textContent=curVal+'%';
+  el('prog-mo').classList.add('show');
+}
+function progSliderChange(v){
+  el('prog-mo-val').textContent=v+'%';
+}
+function saveProgVal(){
+  if(!curProgKey) return;
+  const [entName,subName,col]=curProgKey.split('||');
+  const newVal=parseInt(el('prog-mo-slider').value);
+  const found=findProgRow(entName,subName);
+  if(found) found.sub.vals[col]=newVal;
+  // Check dependency
+  const alert=checkDependency(entName,subName,col,newVal);
+  closeProgModal();
+  renderProgTable();
+  if(alert){
+    setTimeout(()=>showDepAlert(alert),200);
+  } else {
+    showToast('Progression mise à jour ✅');
+  }
+}
+function closeProgModal(){el('prog-mo').classList.remove('show');curProgKey=null;}
+
+function showDepAlert(msg){
+  el('dep-alert-msg').textContent=msg;
+  el('dep-alert-mo').classList.add('show');
+}
+function closeDepAlert(){el('dep-alert-mo').classList.remove('show');}
+
+// ─── FICHES ───
+function shadeColor(hex,amt){
+  let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return '#'+[Math.min(255,r+amt),Math.min(255,g+amt),Math.min(255,b+amt)].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+function openFicheCompany(id,title,color){
+  curFicheCo={id,color};
+  el('fiche-co-sel').style.display='none'; el('fiche-task-list').style.display='block';
+  el('fiche-co-title').textContent=title;
+  renderFicheCards(id,color);
+}
+function renderFicheCards(id,color){
+  const data=fichesData[id]; if(!data) return;
+  const cards=el('fiche-cards'); cards.innerHTML='';
+  data.tasks.forEach((t,i)=>{
+    const card=document.createElement('div'); card.className='tc2';
+    const sm={blocked:'sb',progress:'sp',done:'sd',todo:'st'};
+    const sl={blocked:'Bloqué',progress:'En cours',done:'Terminé',todo:'À faire'};
+    card.style.borderTopColor=shadeColor(color,i*10);
+    card.innerHTML=`<div class="tc2-hdr"><div class="tc2-title">${t.title}</div><div class="tc2-st ${sm[t.status]}">${sl[t.status]}</div></div><div class="tc2-body"><div class="tc2-loc">📍 ${t.loc}</div></div>`;
+    card.onclick=()=>openTd(t,color); cards.appendChild(card);
+  });
+}
+function backCo(){el('fiche-task-list').style.display='none';el('fiche-co-sel').style.display='block';}
+function showAddTaskModal(){el('add-fiche-mo').classList.add('show');}
+function submitNewTask(){
+  const title=el('new-task-title').value.trim(); if(!title){showToast('Entrez un titre','error');return;}
+  const loc=el('new-task-loc').value.trim()||'À préciser';
+  const id=curFicheCo.id; if(!fichesData[id]) return;
+  fichesData[id].tasks.push({id:'new'+Date.now(),title,status:'todo',loc,instr:'Instructions à compléter.',blocked:[],docs:[]});
+  el('add-fiche-mo').classList.remove('show');
+  el('new-task-title').value=''; el('new-task-loc').value='';
+  renderFicheCards(id,curFicheCo.color);
+  showToast('Tâche ajoutée !');
+}
+
+function openTd(t,color){
+  const sm={blocked:'sb',progress:'sp',done:'sd',todo:'st'};
+  const sl={blocked:'Bloqué 🚨',progress:'En cours',done:'Terminé ✅',todo:'À faire'};
+  let h=`<div class="det-title">${t.title}</div>
+  <div class="det-tags"><span class="det-tag ${sm[t.status]}">${sl[t.status]}</span><span class="det-tag" style="background:var(--g100);color:var(--g600)">${t.loc}</span></div>
+  <div class="det-sec"><div class="det-sec-title">Instructions</div>
+    <textarea class="det-instr" id="det-instr-txt">${t.instr}</textarea>
+    <div class="det-edit-hint">Appuyez pour modifier les instructions</div>
+  </div>
+  <div class="det-sec"><div class="det-sec-title">Tâches bloquantes</div>
+    <div class="bl-list" id="det-bl-list">`;
+  t.blocked.forEach(b=>h+=`<div class="bl-item"><div class="bl-item-title">${b.t}</div><div class="bl-item-reason">⚠ ${b.r}</div></div>`);
+  h+=`</div><button class="add-bl-btn" onclick="addBlItem()">+ Ajouter une tâche bloquante</button></div>`;
+  if(t.docs.length){
+    h+=`<div class="det-sec"><div class="det-sec-title">Documents</div><div class="det-docs-wrap">`;
+    t.docs.forEach(d=>h+=`<div class="det-doc" onclick="showToast('${d}','info')"><svg viewBox="0 0 24 24"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 5H10V5h8v2zm0 4H10V9h8v2zm-3 4H10v-2h5v2z"/></svg>${d}</div>`);
+    h+=`</div></div>`;
+  }
+  el('det-body').innerHTML=h;
+  const s=el('scr-td'); s.style.display='flex'; s.classList.add('active','slide-in');
+}
+function addBlItem(){
+  const item=document.createElement('div'); item.className='bl-item';
+  item.innerHTML=`<div class="bl-item-title">Nouvelle tâche bloquante</div><div class="bl-item-reason">⚠ Raison à préciser</div>`;
+  el('det-bl-list').appendChild(item); showToast('Tâche bloquante ajoutée','info');
+}
+function closeTd(){el('scr-td').style.display='none';el('scr-td').classList.remove('active');showScreen('scr-app');switchTab('taches');switchSub('fiches');}
+
+// ─── AUTOCONTROLES ───
+function openAcCompany(id,title,color){
+  curAcCo={id,title,color};
+  el('ac-step1').style.display='none'; el('ac-step2').style.display='block';
+  el('ac-co-title').textContent=title;
+  renderAcApts(id);
+}
+function backAcStep1(){el('ac-step2').style.display='none';el('ac-step1').style.display='block';}
+function getAcPct(coId,aptKey){
+  const checks=acChecks[coId]; if(!checks) return null;
+  const state=acState[coId]&&acState[coId][aptKey]||{};
+  let total=0,done=0;
+  checks.forEach((sec,si)=>sec.items.forEach((item,ii)=>{total++;if(state[si+'_'+ii])done++;}));
+  return total?Math.round(done/total*100):0;
+}
+function renderAcApts(coId){
+  const c=el('ac-apt-list'); c.innerHTML='';
+  const sections=[{lbl:'Bâtiment A',apts:apartments.batA},{lbl:'Bâtiment B',apts:apartments.batB},{lbl:'Bâtiment C',apts:apartments.batC},{lbl:'Bâtiment D',apts:apartments.batD},{lbl:'Pavillons',apts:apartments.pavillons}];
+  sections.forEach(sec=>{
+    const secDiv=document.createElement('div'); secDiv.className='ac-zone-section';
+    secDiv.innerHTML=`<div class="ac-zone-hdr">${sec.lbl}</div>`;
+    sec.apts.forEach(apt=>{
+      const pct=getAcPct(coId,apt);
+      const pctClass=pct===100?'':'pct'+(pct>0&&pct<100?'partial':'none');
+      const btn=document.createElement('button'); btn.className='ac-apt-btn';
+      btn.innerHTML=`<span class="ac-apt-name">${apt}</span><span class="ac-apt-pct ${pct===100?'':pct>0?'partial':'none'}">${pct>0?pct+'%':'À faire'}</span>`;
+      btn.onclick=()=>openAcDetail(coId,apt);
+      secDiv.appendChild(btn);
+    });
+    c.appendChild(secDiv);
+  });
+}
+function openAcDetail(coId,apt){
+  el('ac-det-title').textContent=apt;
+  el('ac-det-sub').textContent=curAcCo.title;
+  const checks=acChecks[coId]||[];
+  if(!acState[coId]) acState[coId]={};
+  if(!acState[coId][apt]) acState[coId][apt]={};
+  let html='';
+  checks.forEach((sec,si)=>{
+    html+=`<div class="ac-check-section"><div class="ac-sec-label">${sec.section}</div>`;
+    sec.items.forEach((item,ii)=>{
+      const checked=!!acState[coId][apt][si+'_'+ii];
+      html+=`<div class="ac-check-item" onclick="toggleAcDetail('${coId}','${apt}',${si},${ii},this)">
+        <div class="acc-cb ${checked?'checked':''}"><svg viewBox="0 0 24 24"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg></div>
+        <span class="acc-item-txt ${checked?'done':''}">${item}</span>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  el('ac-det-body').innerHTML=html;
+  const s=el('scr-ac-detail'); s.style.display='flex'; s.classList.add('active');
+}
+function toggleAcDetail(coId,apt,si,ii,rowEl){
+  if(!acState[coId]) acState[coId]={};
+  if(!acState[coId][apt]) acState[coId][apt]={};
+  const key=si+'_'+ii; acState[coId][apt][key]=!acState[coId][apt][key];
+  const cb=rowEl.querySelector('.acc-cb'); const txt=rowEl.querySelector('.acc-item-txt');
+  cb.classList.toggle('checked',acState[coId][apt][key]); txt.classList.toggle('done',acState[coId][apt][key]);
+  if(acState[coId][apt][key]) showToast('Vérification validée ✅');
+  updateAccueilAc();
+}
+function closeAcDetail(){el('scr-ac-detail').style.display='none';el('scr-ac-detail').classList.remove('active');renderAcApts(curAcCo.id);}
+function updateAccueilAc(){
+  // Count all checks across all companies
+  let td=0,ta=0;
+  Object.entries(acChecks).forEach(([coId,checks])=>{
+    checks.forEach((sec,si)=>sec.items.forEach((item,ii)=>{
+      ta++;
+      if(acState[coId]){
+        Object.values(acState[coId]).forEach(aptState=>{if(aptState[si+'_'+ii])td++;});
+      }
+    }));
+  });
+  if(!ta) return;
+  const pct=Math.round(td/ta*100);
+  el('stat-ac-pct').textContent=pct+'%'; el('stat-ac-sub').textContent=td+' / '+ta+' réalisés';
+  el('ac-prog-fill').style.width=pct+'%';
+}
+
+// ─── DOCUMENTS ───
+function renderDocs(){
+  // Render folder cards
+  const c=el('docs-folders-list'); c.innerHTML='';
+  const sectionLabel=document.createElement('div');
+  sectionLabel.style.cssText='padding:12px 16px 6px;font-size:11px;font-weight:700;color:var(--g500);letter-spacing:2px;text-transform:uppercase;';
+  sectionLabel.textContent='Dossiers';
+  c.appendChild(sectionLabel);
+  docsData.forEach((cat,idx)=>{
+    const card=document.createElement('div'); card.className='doc-folder-card';
+    const newCount=cat.docs.filter(d=>d.badge==='NEW').length;
+    card.innerHTML=`<div class="doc-folder-icon">${cat.icon}</div><div class="doc-folder-info"><div class="doc-folder-name">${cat.cat}</div><div class="doc-folder-count">${cat.docs.length} document${cat.docs.length>1?'s':''}${newCount?` · <span style="color:var(--red);font-weight:700">${newCount} nouveau${newCount>1?'x':''}</span>`:''}</div></div><div class="doc-folder-arrow">›</div>`;
+    card.onclick=()=>openFolder(idx);
+    c.appendChild(card);
+  });
+}
+function openFolder(idx){
+  const cat=docsData[idx];
+  el('docs-folder-name').textContent=cat.cat;
+  const c=el('docs-files-list'); c.innerHTML='';
+  cat.docs.forEach(d=>{
+    const iconMap={pdf:'📄',dwg:'📐',xls:'📊',img:'🖼️'};
+    const clsMap={pdf:'doc-file-pdf',dwg:'doc-file-dwg',xls:'doc-file-xls',img:'doc-file-img'};
+    const div=document.createElement('div'); div.className='doc-item';
+    div.innerHTML=`<div class="doc-file-icon ${clsMap[d.type]||'doc-file-pdf'}">${iconMap[d.type]||'📄'}</div><div class="doc-info"><div class="doc-name">${d.name}</div><div class="doc-meta">${d.meta}</div></div>${d.badge?`<div class="doc-badge doc-new">${d.badge}</div>`:'<div style="color:var(--g400);font-size:16px">›</div>'}`;
+    div.onclick=()=>showToast('Ouverture : '+d.name,'info');
+    c.appendChild(div);
+  });
+  el('docs-folders-view').style.display='none';
+  el('docs-files-view').style.display='block';
+}
+function backToFolders(){
+  el('docs-files-view').style.display='none';
+  el('docs-folders-view').style.display='block';
+}
+
+// ─── BLOCKED TASK ───
+function openAddBlockedModal(){el('add-blocked-mo').classList.add('show');}
+function closeAddBlockedModal(){el('add-blocked-mo').classList.remove('show');}
+function submitBlockedTask(){
+  const title=el('new-blocked-title').value.trim(); if(!title){showToast('Entrez un titre','error');return;}
+  const reason=el('new-blocked-reason').value.trim()||'Raison à préciser';
+  const list=el('blocked-list-home');
+  const item=document.createElement('div'); item.className='blocked-item';
+  item.innerHTML=`<div class="bi-icon">🚫</div><div><div class="bi-title">${title}</div><div class="bi-reason">${reason}</div></div>`;
+  list.appendChild(item);
+  closeAddBlockedModal(); el('new-blocked-title').value=''; el('new-blocked-reason').value='';
+  showToast('Tâche bloquée ajoutée !');
+}
+
+// ─── AI ASSISTANT (réponses préenregistrées pour la démo) ───
+let aiHistory=[];
+
+// Normalise le texte : minuscules + suppression des accents
+function normTxt(s){return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+
+// Banque de réponses préenregistrées — chaque entrée : mots-clés → réponse
+const CANNED_ANSWERS=[
+  {keys:['retard','en retard','qui est en retard','retards'],
+   reply:"D'après le planning LPS, voici les retards constatés :\n\n🔴 **Nagla Peinture** est en retard sur les **2ndes couches de peinture** (30% seulement sur A001, A002 et A101) et bloque la pose des radiateurs du Bâtiment B.\n\n🟠 **Menuiserie Bouille** : livraison des menuiseries extérieures des **Pavillons 5 à 8 retardée de 3 jours** (taux de promesses tenues le plus bas : 40%).\n\n🟠 **EES Électricité** : tableau électrique A001 à **0%**, bloqué par la réserve urgente T3B.\n\nJe recommande une relance de Nagla en priorité pour débloquer la chaîne peinture → radiateurs."},
+  {keys:['reserve','reserves','combien de reserve','nombre de reserve'],
+   reply:"Il reste **4 réserves à lever** sur le chantier LABACHOTTE :\n\n🔴 **URGENT** — Court-circuit tableau T3B (EES Électricité) — Bât. A, Niveau 3\n🟠 **MOYEN** — Fissure mur porteur (JR77 Maçonnerie) — Bât. B, R+2\n🟡 **FAIBLE** — Finition peinture incomplète (Nagla) — Appartement A101\n🟡 **FAIBLE** — Joint manquant siphon douche (Nadalon) — Appartement B201\n\n⚠️ La réserve T3B bloque l'installation du tableau électrique : à traiter en priorité avant toute intervention d'EES sur cette zone."},
+  {keys:['urgent','urgente','urgentes','priorite','prioritaire'],
+   reply:"**1 réserve urgente** est en cours :\n\n🔴 **Court-circuit tableau T3B** — signalée par Mehdi ce matin à 09h18\n📍 Bâtiment A — Niveau 3, Zone B\n👷 Entreprise concernée : **EES Électricité**\n\nCette réserve **bloque l'installation du tableau T3B** (conformité NF C 15-100 à vérifier). Un diagnostic est requis avant toute intervention. La fiche tâche et le plan électrique T3B sont disponibles dans l'onglet Docs."},
+  {keys:['resume','resume du chantier','situation','etat du chantier','synthese','bilan'],
+   reply:"📊 **Résumé du chantier LABACHOTTE — Sens (89)**\n\n• **4 réserves à lever** dont 1 urgente (court-circuit T3B, Bât. A)\n• **3 tâches bloquées** : pose radiateurs Bât. B, menuiseries Pavillons 5-8, tableau T3B\n• **Progression** : pose radiateurs à 90% sur A001, tableaux électriques entre 0 et 60%, 2ndes couches peinture à 30%\n• **Meilleure entreprise** : Nadalon Plomberie (80% de promesses tenues, autocontrôles à 100%)\n• **Point de vigilance** : JR77 n'a réalisé **aucun autocontrôle** (0/2) et Menuiserie Bouille est à 40% de promesses tenues.\n\nLa priorité du jour : lever la réserve T3B et relancer Nagla sur les peintures."},
+  {keys:['promesse','promesses','meilleures promesses','fiable','fiabilite','performance'],
+   reply:"🏆 **Classement des promesses tenues** (tâches faites / prévues) :\n\n1. **Nadalon Plomberie** — 80% (8/10) ✅\n2. **IDTP** — 75% (3/4)\n3. **JR77 Maçonnerie** — 67% (6/9)\n4. **EES Électricité** — 63% (5/8)\n5. **Nagla Peinture** — 57% (4/7)\n6. **Menuiserie Bouille** — 40% (2/5) ⚠️\n\nNadalon reste l'entreprise la plus fiable du chantier. Menuiserie Bouille est à surveiller : moins d'une promesse sur deux est tenue."},
+  {keys:['autocontrole','autocontroles','auto-controle','controle','verification','prochains autocontroles'],
+   reply:"📋 **État des autocontrôles par entreprise :**\n\n✅ **Nadalon Plomberie** — 100% (3/3 vérifications)\n🟠 **EES Électricité** — 33% (1/3)\n🟠 **Nagla Peinture** — 33% (1/3)\n🔴 **JR77 Maçonnerie** — 0% (0/2) ⚠️\n\n**Prochains autocontrôles à réaliser :**\n• JR77 : contrôle chape + isolation (aucun fait à ce jour)\n• EES : vérification conformité NF C 15-100 après levée de la réserve T3B\n• Nagla : contrôle finitions avant réception A101\n\nJe suggère d'envoyer un rappel à JR77 via le chat chantier."},
+  {keys:['bloque','bloquee','bloquees','tache bloquee','taches bloquees','blocage'],
+   reply:"🚫 **3 tâches sont actuellement bloquées :**\n\n1. **Pose radiateur — Bâtiment B** : en attente de la 2ème couche de peinture (Nagla)\n2. **Menuiseries ext. — Pavillons 5 à 8** : livraison retardée de 3 jours (Menuiserie Bouille)\n3. **Installation tableau T3B — Bât. A** : réserve urgente à lever en priorité (EES)\n\nLe déblocage le plus rapide : relancer Nagla sur les peintures, ce qui libère immédiatement Nadalon pour les radiateurs."},
+  {keys:['nagla'],
+   reply:"**Nagla Peinture — état actuel :**\n\n• Promesses tenues : **57%** (4/7)\n• Autocontrôles : **33%** (1/3)\n• En retard sur les **2ndes couches de peinture** (30% sur A001, A002, A101)\n• 1 réserve faible : finition incomplète en A101\n• ⚠️ Son retard **bloque la pose des radiateurs** du Bâtiment B (Nadalon)\n\nRecommandation : relance via le chat multilingue avec échéance ferme cette semaine."},
+  {keys:['nadalon'],
+   reply:"**Nadalon Plomberie — état actuel :**\n\n• Promesses tenues : **80%** (8/10) — meilleure entreprise du chantier 🏆\n• Autocontrôles : **100%** (3/3)\n• Pose radiateur : 90% sur A001, en cours ailleurs\n• 1 réserve faible : joint manquant siphon douche en B201\n• En attente : pose radiateurs Bât. B (bloquée par les peintures Nagla)"},
+  {keys:['ees','electricite','tableau electrique'],
+   reply:"**EES Électricité — état actuel :**\n\n• Promesses tenues : **63%** (5/8)\n• Autocontrôles : **33%** (1/3)\n• Tableaux électriques : 0% (A001), 50% (A002), 60% (A101)\n• 🔴 **1 réserve URGENTE** : court-circuit tableau T3B, Bât. A Niveau 3\n\nL'installation du T3B est bloquée tant que la réserve n'est pas levée. Diagnostic requis avant intervention (NF C 15-100)."},
+  {keys:['jr77','maconnerie','placo','chape'],
+   reply:"**JR77 Maçonnerie — état actuel :**\n\n• Promesses tenues : **67%** (6/9)\n• Autocontrôles : **0%** (0/2) ⚠️ aucun contrôle réalisé\n• Placo TM8 : en attente de démarrage\n• 1 réserve moyenne : fissure mur porteur, Bât. B R+2 (expertise en attente)\n\nAction recommandée : exiger les 2 autocontrôles avant la prochaine réunion de chantier."},
+  {keys:['bonjour','salut','hello','bonsoir','coucou'],
+   reply:"Bonjour ! 👋 Je suis l'assistant du chantier **LABACHOTTE**. Vous pouvez me demander par exemple :\n\n• « Qui est en retard ? »\n• « Combien de réserves reste-t-il ? »\n• « Résumé du chantier »\n• « État des autocontrôles »\n\nQue puis-je faire pour vous ?"},
+  {keys:['merci','super','parfait','top','genial'],
+   reply:"Avec plaisir ! 💪 N'hésitez pas si vous avez besoin d'un point sur les réserves, le planning LPS ou les autocontrôles. Bon chantier !"},
+];
+
+function matchCanned(txt){
+  const t=normTxt(txt);
+  // Banque selon la langue choisie ; on teste aussi l'autre banque en secours
+  const banks = APP_LANG==='en' ? [CANNED_ANSWERS_EN,CANNED_ANSWERS] : [CANNED_ANSWERS,CANNED_ANSWERS_EN];
+  for(const bank of banks){
+    let best=null, bestLen=0;
+    for(const c of bank){
+      for(const k of c.keys){
+        if(t.includes(k) && k.length>bestLen){best=c; bestLen=k.length;}
+      }
+    }
+    if(best) return best.reply;
+  }
+  return null;
+}
+
+function askChip(chip){
+  el('ai-inp').value=chip.textContent;
+  sendAiMsg();
+}
+
+async function sendAiMsg(){
+  const inp=el('ai-inp'); const txt=inp.value.trim(); if(!txt) return;
+  inp.value='';
+  const btn=el('ai-send-btn'); btn.disabled=true;
+
+  // Add user message
+  appendAiMsg('user',txt);
+  aiHistory.push({role:'user',content:txt});
+
+  // Show typing
+  const typingDiv=document.createElement('div'); typingDiv.className='ai-msg bot'; typingDiv.id='ai-typing';
+  typingDiv.innerHTML=`<div class="ai-bubble"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
+  el('ai-msgs').appendChild(typingDiv);
+  scrollAiMsgs();
+
+  // 1) Réponse préenregistrée si mots-clés reconnus (fiable pour la démo, fonctionne partout)
+  const canned=matchCanned(txt);
+  if(canned){
+    setTimeout(()=>{
+      typingDiv.remove();
+      aiHistory.push({role:'assistant',content:canned});
+      appendAiMsg('bot',canned);
+      btn.disabled=false;
+    }, 900+Math.random()*700); // délai réaliste "l'IA réfléchit"
+    return;
+  }
+
+  // 2) Sinon, tentative via l'API Claude (fonctionne dans l'artifact Claude)
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        system: CHANTIER_CONTEXT,
+        messages: aiHistory,
+      })
+    });
+    const data = await response.json();
+    const reply = data.content?.find(b=>b.type==='text')?.text || "Je n'ai pas pu traiter votre demande.";
+    aiHistory.push({role:'assistant',content:reply});
+    typingDiv.remove();
+    appendAiMsg('bot',reply);
+  } catch(e) {
+    // 3) Repli générique si pas de connexion API (ex. hébergement Netlify)
+    typingDiv.remove();
+    const fallback = APP_LANG==='en'
+      ? "I couldn't find that specific information. Try for example: \"Who is late?\", \"How many snags?\", \"Site summary\" or \"Self-inspection status\"."
+      : "Je n'ai pas trouvé cette information précise. Essayez par exemple : « Qui est en retard ? », « Combien de réserves ? », « Résumé du chantier » ou « État des autocontrôles ».";
+    aiHistory.push({role:'assistant',content:fallback});
+    appendAiMsg('bot',fallback);
+  }
+  btn.disabled=false;
+}
+
+function appendAiMsg(role,text){
+  const now=new Date();
+  const time=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0');
+  const div=document.createElement('div'); div.className=`ai-msg ${role}`;
+  div.innerHTML=`<div class="ai-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div><div class="ai-msg-time">${time}</div>`;
+  el('ai-msgs').appendChild(div); scrollAiMsgs();
+}
+function scrollAiMsgs(){setTimeout(()=>el('ai-msgs').scrollTop=el('ai-msgs').scrollHeight,50);}
+el('ai-inp').addEventListener('keydown',e=>{if(e.key==='Enter')sendAiMsg();});
+</script>
+</body>
+</html>
